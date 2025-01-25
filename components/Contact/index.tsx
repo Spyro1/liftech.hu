@@ -1,21 +1,72 @@
-"use client";
+"use client"
+import Script from "next/script"
 import { motion } from "framer-motion";
 import Image from "next/image";
-import React from "react";
+import {useState} from "react";
+import { useRouter } from 'next/navigation';
 
 const Contact = () => {
-  /**
-   * Source: https://www.joshwcomeau.com/react/the-perils-of-rehydration/
-   * Reason: To fix rehydration error
-   */
-  const [hasMounted, setHasMounted] = React.useState(false);
-  React.useEffect(() => {
-    setHasMounted(true);
-  }, []);
-  if (!hasMounted) {
-    return null;
-  }
+  const router = useRouter();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+  const [phone, setPhone] = useState("");
+  const [fileName, setFileName] = useState("");
+  const [file, setFile] = useState<File | null>(null);
 
+  const onFileUploadChange = (e) => {
+    const fileInput = e.target;
+    if (!fileInput.files) {
+      alert("Nem lett kép kiválasztva");
+      return;
+    }
+
+    const file = fileInput.files[0];
+    setFileName(file.name);
+    /** File validation */
+    if (!file.type.startsWith("image")) {
+      alert("Kérem válasszon ki érvényes képet");
+      return;
+    }
+    /** Setting file state */
+    setFile(file); // we will use the file state, to send it later to the server
+
+    /** Reset file input */
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    grecaptcha.enterprise.ready(async () => {
+      const token = await grecaptcha.enterprise.execute('6Le7eF8qAAAAAIEvmYJvrMjXboobYMjT-Y9Vlros', {action: 'SUBMIT'});
+  
+        
+        let formData = new FormData();
+        if(!file){
+          alert("Kérem válasszon ki képet!");
+          return;
+        }
+        formData.append("file", file);
+        formData.append("file_name", fileName);
+        formData.append("name", name);
+        formData.append("email", email);
+        formData.append("subject", subject);
+        formData.append("message", message);
+        formData.append("phone", phone);
+    
+        const res = await fetch("/api/sendgrid", {
+          method: "POST",
+          body: formData,
+        });
+      const parsRes = await res.json();
+      const redirectUrl = parsRes.location;
+      if (redirectUrl) {
+          router.push(redirectUrl);  // This will trigger a client-side redirect
+      }
+    });
+
+
+      };
   return (
     <>
       {/* <!-- ===== Contact Start ===== --> */}
@@ -46,61 +97,71 @@ const Contact = () => {
                               </h2>
 
               <form
-                action="http://liftech.hu:5000"
-                enctype="multipart/form-data"
-                method="POST"
+		          onSubmit={handleSubmit}
               >
                 <div className="mb-7.5 flex flex-col gap-7.5 lg:flex-row lg:justify-between lg:gap-14">
                   <input
                     type="text"
+                    required
                     placeholder="Teljes név"
-                    id="name"
                     name="name"
-                    requried
                     className="w-full border-b border-stroke bg-transparent pb-3.5 focus:border-waterloo focus:placeholder:text-black focus-visible:outline-none dark:border-strokedark dark:focus:border-manatee dark:focus:placeholder:text-white lg:w-1/2"
+                    onChange={(e) => {
+                      setName(e.target.value);
+                    }}
                   />
 
                   <input
                     type="email"
                     placeholder="Email cím"
-                    id="email"
                     name="email"
-                    requried
+                    required
                     className="w-full border-b border-stroke bg-transparent pb-3.5 focus:border-waterloo focus:placeholder:text-black focus-visible:outline-none dark:border-strokedark dark:focus:border-manatee dark:focus:placeholder:text-white lg:w-1/2"
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                    }}
+
                   />
                 </div>
-
                 <div className="mb-12.5 flex flex-col gap-7.5 lg:flex-row lg:justify-between lg:gap-14">
                   <input
                     type="text"
-                    id="subject"
                     name="subject"
+                    required
                     placeholder="Tárgy"
                     className="w-full border-b border-stroke bg-transparent pb-3.5 focus:border-waterloo focus:placeholder:text-black focus-visible:outline-none dark:border-strokedark dark:focus:border-manatee dark:focus:placeholder:text-white lg:w-1/2"
-                  />
+                    onChange={(e) => {
+                      setSubject(e.target.value);
+                    }}                  />
 
                   <input
                     type="text"
-                    id="tnumber"
-                    name="tnumber"
+                    name="phone"
+                    required
                     placeholder="Telefonszám"
-                    requried
                     className="w-full border-b border-stroke bg-transparent pb-3.5 focus:border-waterloo focus:placeholder:text-black focus-visible:outline-none dark:border-strokedark dark:focus:border-manatee dark:focus:placeholder:text-white lg:w-1/2"
+                    onChange={(e) => {
+                      setPhone(e.target.value);
+                    }}
                   />
                 </div>
 
                 <div className="mb-11.5 flex">
                   <textarea
                     placeholder="Üzenet"
-                    id="message"
+                    required
                     name="message"
                     rows={4}
                     className="w-full border-b border-stroke bg-transparent focus:border-waterloo focus:placeholder:text-black focus-visible:outline-none dark:border-strokedark dark:focus:border-manatee dark:focus:placeholder:text-white"
+                    onChange={(e) => {
+                      setMessage(e.target.value);
+                    }}
+            		    maxLength={300}
                   ></textarea>
                 </div>
                 <div className="grid grid-row-2 grid-col-1 mb-6 gap-3 ">
-                  <label htmlFor="file">Töltsön föl képet a lépcsőjéről:</label>
-                  <input type="file" id="file" name="file" accept="image/png, image/jpeg"/>
+                  <label htmlFor="file">Töltsön föl képet a lépcsőjéről (PNG, JPG vagy JPEG formátumban):</label>
+                  <input type="file" id="file" name="file" onChange={onFileUploadChange} accept=".png, .jpeg, .jpg" />
                 </div>
                 <div className="flex flex-wrap gap-4 xl:justify-between ">
                   <div className="mb-4 flex md:mb-0">
@@ -109,7 +170,7 @@ const Contact = () => {
                       className="flex gap-4 max-w-[425px] cursor-pointer select-none pl-5"
                     >
                     <input
-                    requried
+                    required
                       id="default-checkbox"
                       type="checkbox"
                       className="peer sr-only"
@@ -135,10 +196,10 @@ const Contact = () => {
                     </label>
                   </div>
                   <button
+		    type="submit"
                     aria-label="üzenet küldése"
                     className="inline-flex items-center gap-2.5 rounded-full bg-black px-6 py-3 font-medium text-white duration-300 ease-in-out hover:bg-blackho dark:bg-btndark"
-                  >
-                    Küldés
+>                    Küldés
                     <svg
                       className="fill-white"
                       width="14"
@@ -154,7 +215,7 @@ const Contact = () => {
                     </svg>
                   </button>
                 </div>
-              </form>
+             </form>
             </motion.div>
 
             <motion.div
@@ -191,7 +252,7 @@ const Contact = () => {
                   Email cím
                 </h3>
                 <p>
-                  <a href="mailto:info.liftech@gmail.com">liftech@gmail.com</a>
+                  <a href="mailto:liftechgroupkft@gmail.com">liftechgroupkft@gmail.com</a>
                 </p>
               </div>
               <div>

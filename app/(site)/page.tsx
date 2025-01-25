@@ -4,7 +4,7 @@ import Brands from "@/components/Brands";
 import Feature from "@/components/Features";
 import About from "@/components/About";
 import Contact from "@/components/Contact";
-import Testimonial from "@/components/Testimonial";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "Főoldal | Liftech.hu",
@@ -17,6 +17,10 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <main>
+      <Script 
+        src="https://www.google.com/recaptcha/enterprise.js?render=6Le7eF8qAAAAAIEvmYJvrMjXboobYMjT-Y9Vlros"
+        strategy="afterInteractive"
+      />
       <Hero />
       <Brands />
       <Feature />

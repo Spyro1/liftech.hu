@@ -1,3 +1,5 @@
+import Script from 'next/script'
+
 export default function Head() {
   return (
     <>
@@ -7,7 +9,6 @@ export default function Head() {
       <meta name="charset" content="utf-8"/>
       <meta name="description" content="Csapatunk új és használt lépcsőliftek, függőleges platformliftek árulásával és beszerelésével foglalkozik. Felszerelés történhet akár kanyarodó akár egyenes lépcsőre is." />
       <link rel="icon" href="/images/favicon.ico" />
-
     </>
   );
 }

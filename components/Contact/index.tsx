@@ -12,27 +12,17 @@ const Contact = () => {
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [phone, setPhone] = useState("");
-  const [fileName, setFileName] = useState("");
-  const [file, setFile] = useState<File | null>(null);
+  //const [fileNames, setFileNames] = useState<string[]>([]);
+  const [files, setFiles] = useState<File[]>([]);
 
   const onFileUploadChange = (e) => {
-    const fileInput = e.target;
-    if (!fileInput.files) {
+    const { files } = e.target;
+    if (!files || files.length === 0) {
       alert("Nem lett kép kiválasztva");
       return;
     }
 
-    const file = fileInput.files[0];
-    setFileName(file.name);
-    /** File validation */
-    if (!file.type.startsWith("image")) {
-      alert("Kérem válasszon ki érvényes képet");
-      return;
-    }
-    /** Setting file state */
-    setFile(file); // we will use the file state, to send it later to the server
-
-    /** Reset file input */
+    setFiles(Array.from(files));
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -42,12 +32,12 @@ const Contact = () => {
   
         
         let formData = new FormData();
-        if(!file){
-          alert("Kérem válasszon ki képet!");
-          return;
+        if(files){
+          for( const file of files){
+            formData.append("files", file);
+            formData.append("names", file.name);
+          }
         }
-        formData.append("file", file);
-        formData.append("file_name", fileName);
         formData.append("name", name);
         formData.append("email", email);
         formData.append("subject", subject);
@@ -161,7 +151,7 @@ const Contact = () => {
                 </div>
                 <div className="grid grid-row-2 grid-col-1 mb-6 gap-3 ">
                   <label htmlFor="file">Töltsön föl képet a lépcsőjéről (PNG, JPG vagy JPEG formátumban):</label>
-                  <input type="file" id="file" name="file" onChange={onFileUploadChange} accept=".png, .jpeg, .jpg" />
+                  <input multiple type="file" id="file" name="file" onChange={onFileUploadChange} accept=".png, .jpeg, .jpg" />
                 </div>
                 <div className="flex flex-wrap gap-4 xl:justify-between ">
                   <div className="mb-4 flex md:mb-0">

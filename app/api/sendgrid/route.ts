@@ -9,6 +9,7 @@ interface Attachment {
   type: string; // MIME type of the file (e.g., application/pdf)
 }
 
+
 export async function POST(request: NextRequest) {
   const formData = await request.formData();
 

@@ -150,8 +150,8 @@ const Contact = () => {
                   ></textarea>
                 </div>
                 <div className="grid grid-row-2 grid-col-1 mb-6 gap-3 ">
-                  <label htmlFor="file">Töltsön föl képet a lépcsőjéről (PNG, JPG vagy JPEG formátumban):</label>
-                  <input multiple type="file" id="file" name="file" onChange={onFileUploadChange} accept=".png, .jpeg, .jpg" />
+                  <label htmlFor="file">Töltsön föl képeket a lépcsőjéről (PNG, JPG vagy JPEG formátumban):</label>
+                  <input multiple type="file" id="file" name="file" onChange={onFileUploadChange} accept=".png, .jpeg, .jpg, .heic, .heif" />
                 </div>
                 <div className="flex flex-wrap gap-4 xl:justify-between ">
                   <div className="mb-4 flex md:mb-0">

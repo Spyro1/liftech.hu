@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://liftech.hu/sitemap.xml

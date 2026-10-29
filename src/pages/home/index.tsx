@@ -1,0 +1,21 @@
+import Seo from "@/lib/seo";
+import Hero from "@/components/Hero";
+import Brands from "@/components/Brands";
+import Feature from "@/components/Features";
+import About from "@/components/About";
+import Contact from "@/components/Contact";
+import News from "@/components/News";
+
+export default function Home() {
+  return (
+    <main>
+      <Seo title="Főoldal | Liftech.hu" description="Ez a főoldala weboldalunknak, itt tömören megtalálhat minden fontos információt rólunk és lépcsőliftjeinkről" robots={"follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large"} />
+      <Hero />
+      <Brands />
+      <News />
+      <Feature />
+      <About />
+      <Contact />
+    </main>
+  );
+}

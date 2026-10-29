@@ -8,9 +8,7 @@
 # testing
 /coverage
 
-# next.js
-/.next/
-/out/
+/dist/
 
 # contentlayer
 .contentlayer
@@ -32,5 +30,5 @@ yarn-error.log*
 .env*.local
 .env
 
-# vercel
-.vercel
+# netlify
+.netlify

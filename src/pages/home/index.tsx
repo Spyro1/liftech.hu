@@ -12,8 +12,8 @@ export default function Home() {
       <Seo title="Főoldal | Liftech.hu" description="Ez a főoldala weboldalunknak, itt tömören megtalálhat minden fontos információt rólunk és lépcsőliftjeinkről" robots={"follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large"} />
       <Hero />
       <Brands />
-      <Feature />
       <News />
+      <Feature />
       <About />
       <Contact />
     </main>

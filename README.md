@@ -1,13 +1,12 @@
 # Liftech website
 
-React + Vite + Tailwind single-page site, hosted on **Netlify**, with news managed in **Sanity** and the contact form sent through a **Netlify Function** using **SendGrid** and **Google reCAPTCHA Enterprise**.
+React + Vite + Tailwind single-page site, hosted on **Netlify**, with news managed in **Sanity** and the contact form handled by **Netlify Forms**.
 
 | Part | Service | Where |
 | --- | --- | --- |
 | Website (static build) | Netlify | https://app.netlify.com/projects/liftech/overview |
 | News / promotions CMS | Sanity | https://liftech.sanity.studio/ |
-| Contact form email | SendGrid, called from `netlify/functions/contact.mts` | https://app.sendgrid.com |
-| Spam protection | Google reCAPTCHA Enterprise | https://console.cloud.google.com |
+| Contact form (submissions + email notification) | Netlify Forms | Netlify -> Forms |
 | Domain / DNS (currently) | Rackhost | https://www.rackhost.hu |
 
 ## Repository layout
@@ -16,9 +15,9 @@ React + Vite + Tailwind single-page site, hosted on **Netlify**, with news manag
 src/                    React app (pages in src/pages, route table in src/App.tsx)
 src/lib/sanity.ts       Fetches news posts from Sanity (public API, no token)
 src/components/News     News cards shown on the home page
-src/components/Contact  Contact form
-netlify/functions/      contact.mts - verifies reCAPTCHA, sends the email via SendGrid
-netlify.toml            Build config + redirects (/api/sendgrid -> function, SPA fallback)
+src/components/Contact  Contact form (posts to Netlify Forms)
+index.html              Contains a hidden copy of the form so Netlify can detect it
+netlify.toml            Build config + SPA fallback redirect
 studio-liftech/         Sanity Studio (the editor UI for the marketing team)
 ```
 
@@ -33,7 +32,7 @@ npm start                # http://localhost:5173
 npm run build            # type check + production build into dist/
 ```
 
-The contact form calls `/api/sendgrid`, which only exists on Netlify. To test it locally use `npx netlify dev` (Netlify CLI) instead of `npm start`.
+The contact form only works on a Netlify deploy (production or a preview URL); Netlify Forms does not exist locally.
 
 Sanity Studio:
 
@@ -51,24 +50,20 @@ Set these in Netlify: **Site configuration -> Environment variables**. Values pr
 | --- | --- | --- | --- |
 | `VITE_SANITY_PROJECT_ID` | no | site | Sanity project id (`tvqj8hy2`) |
 | `VITE_SANITY_DATASET` | no | site | Sanity dataset, `production` |
-| `VITE_RECAPTCHA_SITE_KEY` | no | site + function | reCAPTCHA Enterprise site key |
-| `SENDGRID_API_KEY` | **yes** | function | SendGrid key with "Mail Send" permission |
-| `RECAPTCHA_PROJECT_ID` | no | function | Google Cloud project id |
-| `RECAPTCHA_API_KEY` | **yes** | function | Google Cloud API key allowed to call reCAPTCHA Enterprise |
 
-Do not add a Sanity API token as a `VITE_` variable: it would be public. The news dataset is public content and is read without a token.
+These two are the only variables the site needs. The contact form needs none. Do not add a Sanity API token as a `VITE_` variable: it would be public. The news dataset is public content and is read without a token. Delete any leftover `SENDGRID_API_KEY`, `VITE_SANITY_API_TOKEN`, `VITE_RECAPTCHA_SITE_KEY`, `RECAPTCHA_*` variables.
 
 The same non-secret values go into a local `.env` for development (see `.env.example`). `.env` is not committed.
 
 ## 1. Netlify hosting
 
 1. Netlify -> **Add new project -> Import from Git** and pick this repository.
-2. Build settings are read from `netlify.toml`: command `npm run build`, publish directory `dist`, functions in `netlify/functions`. Leave them as they are.
+2. Build settings are read from `netlify.toml`: command `npm run build`, publish directory `dist`. Leave them as they are.
 3. **Do not enable the "Next.js" runtime / `@netlify/plugin-nextjs`.** The site used to be Next.js and the plugin fails the build on a Vite project. Check **Site configuration -> Build & deploy -> Plugins** and remove it if present.
 4. Add the environment variables above, then deploy.
 5. Every push to `main` deploys to production. Other branches and pull requests get preview URLs.
 
-The two redirects in `netlify.toml` matter: `/api/sendgrid` goes to the function, and everything else falls back to `index.html` so deep links such as `/kapcsolat` work on refresh.
+The redirect in `netlify.toml` sends every path to `index.html` so deep links such as `/kapcsolat` work on refresh.
 
 ## 2. Sanity CMS for the marketing team
 
@@ -88,30 +83,25 @@ npx sanity login
 npx sanity deploy
 ```
 
-## 3. SendGrid (contact form email)
+## 3. Contact form (Netlify Forms)
 
-The function sends one email per submission to the company inbox, with the customer's photos attached. SendGrid is only the delivery service; no mail server is needed.
+The form needs no API keys, no email service and no serverless code.
 
-1. Create an account at sendgrid.com (free tier: about 100 emails/day). New accounts can be held for review for a day or so.
-2. **Settings -> API Keys -> Create API Key** with **Restricted access -> Mail Send (Full)**. Copy it once and store it in Netlify as `SENDGRID_API_KEY`.
-3. **Verify the sender.** SendGrid rejects mail from addresses it does not know, and the function then returns HTTP 500. Pick one:
-   - **Single Sender Verification** (quick): **Settings -> Sender Authentication -> Verify a Single Sender** for `info@liftech.hu`. SendGrid mails a confirmation link to that address, so the inbox must already work.
-   - **Domain Authentication** (recommended): **Authenticate Your Domain**, enter `liftech.hu`, and add the 3 CNAME records SendGrid shows to the DNS zone. This improves delivery and avoids spam folders. Add the records wherever the DNS is hosted at that time (see section 5).
-4. The sender and recipient addresses are currently hardcoded in `netlify/functions/contact.mts` (`from: info@liftech.hu`, `to: labasattila@gmail.com`). Change them there, or move them to environment variables.
-5. Check delivery in SendGrid -> **Activity**. The function reports success as soon as SendGrid accepts the message; bounces and blocks only show up there.
+How it works:
+- `index.html` contains a hidden form named `contact`. At deploy time Netlify scans the HTML, finds it and starts collecting submissions for that form name. (A form that only exists in React is not detected, so do not delete the hidden copy. If you add or rename a field in `src/components/Contact/index.tsx`, add it to the hidden form too, and do not set a `Content-Type` header on the upload request.)
+- The React form posts the fields and the photos to `/` as `multipart/form-data` with `form-name=contact`, then shows the confirmation page. Netlify allows only **one file per field**, so visitors pick up to five photos in one multi-select picker, and on submit the code sends them as `photo1` to `photo5`; those five fields also exist in the hidden form.
+- Spam: a hidden honeypot field (`bot-field`) that real visitors never fill in. Netlify also applies its built-in spam filtering. There is no reCAPTCHA.
 
-Limits: attachments are base64-encoded into the request (SendGrid max about 30 MB total); the form itself limits uploads to 5 MB.
+Setup in Netlify:
+1. **Forms** in the site menu -> make sure **Form detection** is enabled (it is by default). After the first deploy a form named `contact` should appear.
+2. **Forms -> Form notifications -> Add notification -> Email notification**: event **New form submission**, form **contact** (or any form), **email to notify** = the company inbox. Several addresses are possible by adding several notifications. This is the only place the recipient is configured.
+3. Submissions, including the uploaded photos, are stored under **Forms -> contact** and can be exported as CSV. The notification email contains the fields plus links to the files (photos are not attached to the email).
+4. The email is sent from `formresponses@netlify.com`. Because the form has an `email` field, replying goes to the customer. Because it also has a field named `subject`, the customer's typed subject becomes the email subject (a `subject` field in the HTML overrides any subject set in the dashboard). Rename the field if you want a fixed subject instead.
+5. Optional: Slack or webhook notifications from the same **Submission notifications** page.
 
-## 4. Google reCAPTCHA Enterprise (spam protection)
+Limits: one file per field, 8 MB per request, a 30-second upload timeout, and (free plan) 100 submissions per month. The form itself limits the photos to 5 MB in total. Files that contain personal data need extra security (Netlify recommends its Very Good Security integration). If you need more submissions or want photos attached to the email, the alternative is a Netlify Function + SendGrid (see git history, commit `dd45667`).
 
-The browser gets a token from reCAPTCHA when the form is submitted, and the function verifies it with Google before sending any email (score must be >= 0.5).
-
-1. Google Cloud Console -> create or pick a project -> enable **reCAPTCHA Enterprise API**. Billing must be enabled on the project; the first 10,000 assessments per month are free.
-2. **reCAPTCHA Enterprise -> Create key** -> type **Website**, add domains `liftech.hu`, `www.liftech.hu`, `liftech.netlify.app` (and `localhost` for development), score-based. The key id is `VITE_RECAPTCHA_SITE_KEY`.
-3. **APIs & Services -> Credentials -> Create API key**, restrict it to the reCAPTCHA Enterprise API. This is `RECAPTCHA_API_KEY`. The project id is `RECAPTCHA_PROJECT_ID`.
-4. The `index.html` script tag loads `enterprise.js?render=<site key>`, so the site key must be set at build time.
-
-Remember to add the final domain to the reCAPTCHA key's allowed domains when you move the domain; a token minted on an unlisted domain is rejected and the form fails.
+Test after every change to the form: submit it on the deployed site, check **Forms -> contact**, and check the notification email (and spam folder).
 
 ## 5. Moving the domain from Rackhost to Netlify
 
@@ -132,12 +122,11 @@ Domain **registration**, **DNS** and **hosting** are three separate things. You 
    - `www`: `CNAME` to `liftech.netlify.app`
    - Remove old `A`/`AAAA` records pointing at the Rackhost web server.
 3. Leave `MX`, `TXT` (SPF, DKIM, verification) and any other records alone.
-4. Add SendGrid's CNAME records here if you chose Domain Authentication.
 
 ### Option B: move DNS to Netlify DNS
 
 1. Netlify -> Domain management -> add the domain -> **Set up Netlify DNS**.
-2. Recreate **every** record from the exported Rackhost zone in Netlify, especially `MX`, SPF/DKIM `TXT`, and the SendGrid CNAMEs. Missing records here break email.
+2. Recreate **every** record from the exported Rackhost zone in Netlify, especially `MX`, SPF/DKIM `TXT`, and any other records you use. Missing records here break email.
 3. At Rackhost change the domain's **nameservers** to the four values Netlify shows.
 4. Netlify then manages the web records automatically. Any later DNS change is done in Netlify, not Rackhost.
 
@@ -146,7 +135,7 @@ Domain **registration**, **DNS** and **hosting** are three separate things. You 
 1. Netlify -> **Domain management -> HTTPS -> Verify DNS configuration**, then **Provision certificate** (free Let's Encrypt, renews automatically). It can take from a few minutes to a few hours after DNS propagates.
 2. Check propagation: `nslookup liftech.hu` and https://dnschecker.org.
 3. Test `https://liftech.hu` and `https://www.liftech.hu` (one should redirect to the other), a deep link plus refresh (e.g. `/kapcsolat`), the news section, and submit the contact form end to end.
-4. Add the final domain to the reCAPTCHA key (section 4) and finish SendGrid domain authentication (section 3).
+4. Submit the contact form once on the final domain.
 5. Send a test email to and from `info@liftech.hu` to confirm mail still works.
 6. Keep the Rackhost hosting package for a week or two as a rollback (switching the DNS back restores the old site), then cancel hosting. Cancel the domain registration only if you intend to transfer it elsewhere.
 
@@ -161,11 +150,11 @@ Not required. If you want it later: unlock the domain at Rackhost, get the EPP/a
 | Netlify build fails with "publish directory does not contain expected Next.js build output" | Next.js plugin still enabled, remove it (section 1) |
 | Whole site shows a 401 or "Error - Request ID" page | Netlify site protection / password enabled, or a bad deploy. Check **Site configuration -> Access & security** and the deploy log |
 | News section is missing | Dataset is private, or `VITE_SANITY_PROJECT_ID` / `VITE_SANITY_DATASET` missing (redeploy after adding) |
-| Contact form goes to the error page | Function returned non-2xx: check **Logs -> Functions -> contact**. Usually reCAPTCHA variables or an unverified SendGrid sender |
-| Form works but no email | Check SendGrid Activity and the spam folder; finish domain authentication |
+| Contact form goes to the error page | Hidden form missing from `index.html` or field names differ, so Netlify rejects the post. Check the deploy log ("Form detection") and **Forms** |
+| Form submits but no email | **Forms -> Form notifications** has no notification for the form; check spam folder |
 | HTTPS warning after the domain move | Certificate not provisioned yet, rerun **Verify DNS configuration** |
 
 ## Known state / to do
 
-- The contact form and the function must agree on reCAPTCHA. The function requires a `token` field, so the form must send it (`grecaptcha.enterprise.execute(...)`, then `formData.append("token", token)`). Check `src/components/Contact/index.tsx` before going live; the latest commit there is mid-change and does not build.
-- Recipient and sender addresses are hardcoded in `contact.mts`; consider moving them to environment variables.
+- Contact form notifications are configured in the Netlify dashboard, not in code. Make sure the notification address is the right company inbox.
+- The Netlify docs do not say whether the notification email attaches or only links the uploaded photos. Test one submission with photos and check the email.

@@ -3,30 +3,39 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
+const MAX_PHOTOS = 5;
+const MAX_TOTAL_BYTES = 5 * 1024 * 1024;
+
 const Contact = () => {
   const navigate = useNavigate();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [subject, setSubject] = useState("");
-  const [message, setMessage] = useState("");
-  const [phone, setPhone] = useState("");
+  const [photos, setPhotos] = useState<File[]>([]);
 
-  const onFileUploadChange = (e) => {
-    const { files } = e.target;
-    if (!files || files.length === 0) {
-      alert("Nem lett kép kiválasztva");
-      return;
-    }
-
-    const picked: File[] = Array.from(files as FileList);
-    if (picked.reduce((sum, f) => sum + f.size, 0) > 5 * 1024 * 1024) {
+  const onFileUploadChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const picked = Array.from(e.target.files ?? []);
+    if (picked.length > MAX_PHOTOS) {
+      toast.error(`Legfeljebb ${MAX_PHOTOS} képet csatolhat`);
+    } else if (picked.reduce((sum, f) => sum + f.size, 0) > MAX_TOTAL_BYTES) {
       toast.error("A csatolt képek együttes mérete legfeljebb 5 MB lehet");
-      e.target.value = "";
+    } else {
+      setPhotos(picked);
       return;
     }
+    e.target.value = "";
+    setPhotos([]);
   };
-  const handleSubmit = (e) => {
-    setTimeout(() => navigate("/confirmation"), 500);
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+    formData.set("form-name", "contact");
+    photos.forEach((file, i) => formData.set(`photo${i + 1}`, file));
+
+    try {
+      const res = await fetch("/", { method: "POST", body: formData });
+      navigate(res.ok ? "/confirmation" : "/error");
+    } catch {
+      navigate("/error");
+    }
   };
   return (
     <>
@@ -57,7 +66,13 @@ const Contact = () => {
                 Küldjön üzenetet nekünk!
               </h2>
 
-              <form name="contact" method="POST" netlify onSubmit={handleSubmit}>
+              <form name="contact" onSubmit={handleSubmit}>
+                <p hidden>
+                  <label>
+                    Ne töltse ki:{" "}
+                    <input name="bot-field" tabIndex={-1} autoComplete="off" />
+                  </label>
+                </p>
                 <div className="mb-7.5 flex flex-col gap-7.5 lg:flex-row lg:justify-between lg:gap-14">
                   <input
                     type="text"
@@ -65,9 +80,6 @@ const Contact = () => {
                     placeholder="Teljes név"
                     name="name"
                     className="w-full border-b border-stroke bg-transparent pb-3.5 focus:border-waterloo focus:placeholder:text-black focus-visible:outline-none dark:border-strokedark dark:focus:border-manatee dark:focus:placeholder:text-white lg:w-1/2"
-                    onChange={(e) => {
-                      setName(e.target.value);
-                    }}
                   />
 
                   <input
@@ -76,9 +88,6 @@ const Contact = () => {
                     name="email"
                     required
                     className="w-full border-b border-stroke bg-transparent pb-3.5 focus:border-waterloo focus:placeholder:text-black focus-visible:outline-none dark:border-strokedark dark:focus:border-manatee dark:focus:placeholder:text-white lg:w-1/2"
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                    }}
                   />
                 </div>
                 <div className="mb-12.5 flex flex-col gap-7.5 lg:flex-row lg:justify-between lg:gap-14">
@@ -88,9 +97,6 @@ const Contact = () => {
                     required
                     placeholder="Tárgy"
                     className="w-full border-b border-stroke bg-transparent pb-3.5 focus:border-waterloo focus:placeholder:text-black focus-visible:outline-none dark:border-strokedark dark:focus:border-manatee dark:focus:placeholder:text-white lg:w-1/2"
-                    onChange={(e) => {
-                      setSubject(e.target.value);
-                    }}
                   />
 
                   <input
@@ -99,9 +105,6 @@ const Contact = () => {
                     required
                     placeholder="Telefonszám"
                     className="w-full border-b border-stroke bg-transparent pb-3.5 focus:border-waterloo focus:placeholder:text-black focus-visible:outline-none dark:border-strokedark dark:focus:border-manatee dark:focus:placeholder:text-white lg:w-1/2"
-                    onChange={(e) => {
-                      setPhone(e.target.value);
-                    }}
                   />
                 </div>
 
@@ -112,22 +115,18 @@ const Contact = () => {
                     name="message"
                     rows={4}
                     className="w-full border-b border-stroke bg-transparent focus:border-waterloo focus:placeholder:text-black focus-visible:outline-none dark:border-strokedark dark:focus:border-manatee dark:focus:placeholder:text-white"
-                    onChange={(e) => {
-                      setMessage(e.target.value);
-                    }}
                     maxLength={300}
                   ></textarea>
                 </div>
                 <div className="grid-row-2 grid-col-1 mb-6 grid gap-3 ">
-                  <label htmlFor="file">
+                  <label htmlFor="photos">
                     Töltsön föl képeket a lépcsőjéről (PNG, JPG vagy JPEG
-                    formátumban):
+                    formátumban, legfeljebb 5 db, együtt 5 MB):
                   </label>
                   <input
                     multiple
                     type="file"
-                    id="file"
-                    name="file"
+                    id="photos"
                     onChange={onFileUploadChange}
                     accept=".png, .jpeg, .jpg, .heic, .heif"
                   />

@@ -9,6 +9,27 @@
     overflow-x: clip;
   }
 
+  /* let long words wrap and form controls shrink inside flex/grid parents on narrow screens */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  p,
+  a,
+  li,
+  label,
+  span {
+    overflow-wrap: break-word;
+  }
+
+  input,
+  textarea,
+  select {
+    min-width: 0;
+    max-width: 100%;
+  }
+
   body {
     @apply relative z-1 font-sans text-regular font-normal text-slate antialiased;
   }

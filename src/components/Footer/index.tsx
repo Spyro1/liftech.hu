@@ -29,7 +29,7 @@ const Footer = () => {
                 whileInView="visible"
                 transition={{ duration: 1, delay: 0.5 }}
                 viewport={{ once: true }}
-                className="animate_top w-1/2 lg:w-1/4"
+                className="animate_top w-full sm:w-1/2 lg:w-1/4"
               >
                 <Link to="/" className="relative">
                   <img

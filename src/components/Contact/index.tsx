@@ -57,7 +57,7 @@ const Contact = () => {
               whileInView="visible"
               transition={{ duration: 1, delay: 0.1 }}
               viewport={{ once: true }}
-              className="animate_top w-full border border-t-4 border-line border-t-navy bg-white p-7.5 md:w-3/5 lg:w-3/4 xl:p-15"
+              className="animate_top w-full border border-t-4 border-line border-t-navy bg-white p-5 sm:p-7.5 md:w-3/5 lg:w-3/4 xl:p-15"
             >
               <h2 className="mb-15 font-display text-4xl font-bold uppercase text-navy xl:text-sectiontitle2">
                 Küldjön üzenetet nekünk!
@@ -115,8 +115,8 @@ const Contact = () => {
                     maxLength={300}
                   ></textarea>
                 </div>
-                <div className="grid-row-2 grid-col-1 mb-6 grid gap-3 ">
-                  <label htmlFor="photos">
+                <div className="mb-6 grid grid-cols-1 gap-3">
+                  <label htmlFor="photos" className="min-w-0">
                     Töltsön föl képeket a lépcsőjéről (PNG, JPG vagy JPEG
                     formátumban, együtt legfeljebb 5 MB):
                   </label>
@@ -124,6 +124,7 @@ const Contact = () => {
                     multiple
                     type="file"
                     id="photos"
+                    className="w-full min-w-0 text-sm"
                     name="files"
                     onChange={onFileUploadChange}
                     accept=".png, .jpeg, .jpg, .heic, .heif"
@@ -229,7 +230,10 @@ const Contact = () => {
                   Email cím
                 </h3>
                 <p>
-                  <a href="mailto:liftechgroupkft@gmail.com">
+                  <a
+                    href="mailto:liftechgroupkft@gmail.com"
+                    className="break-all"
+                  >
                     liftechgroupkft@gmail.com
                   </a>
                 </p>

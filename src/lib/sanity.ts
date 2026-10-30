@@ -11,8 +11,9 @@ const query = `*[_type=="news"]|order(date desc)[0...12]{_id,title,caption,date,
 
 export const fetchNews = async (): Promise<NewsPost[]> => {
   if (!import.meta.env.VITE_SANITY_PROJECT_ID) return [];
-  const res = await fetch(
-    `https://${import.meta.env.VITE_SANITY_PROJECT_ID}.apicdn.sanity.io/v2024-01-01/data/query/production?query=${encodeURIComponent(query)}`,
-  );
+  const dataset = import.meta.env.VITE_SANITY_DATASET || "production";
+  const url = `https://${import.meta.env.VITE_SANITY_PROJECT_ID}.apicdn.sanity.io/v2024-01-01/data/query/${dataset}?query=${encodeURIComponent(query)}`;
+  const res = await fetch(url);
+  if (!res.ok) return [];
   return (await res.json()).result ?? [];
 };

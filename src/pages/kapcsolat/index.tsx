@@ -1,5 +1,5 @@
 import Seo from "@/lib/seo";
-import Contact from "@/components/Contact";
+import Contact from "@/components/sections/Contact";
 
 const SupportPage = () => {
   return (

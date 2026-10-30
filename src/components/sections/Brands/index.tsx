@@ -1,6 +1,6 @@
 import React from "react";
 import SingleBrand from "./SingleBrand";
-import brandData from "./brandData";
+import brandData from "@/data/brandData";
 
 const Brands = () => {
   return (

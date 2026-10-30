@@ -1,7 +1,7 @@
 import React from "react";
-import featuresData from "./featuresData";
+import featuresData from "@/data/featuresData";
 import SingleFeature from "./SingleFeature";
-import SectionHeader from "../Common/SectionHeader";
+import SectionHeader from "@/components/ui/SectionHeader";
 
 const Feature = () => {
   return (

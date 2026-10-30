@@ -1,10 +1,10 @@
 import Seo from "@/lib/seo";
-import Hero from "@/components/Hero";
-import Brands from "@/components/Brands";
-import Feature from "@/components/Features";
-import About from "@/components/About";
-import Contact from "@/components/Contact";
-import News from "@/components/News";
+import Hero from "@/components/sections/Hero";
+import Brands from "@/components/sections/Brands";
+import Feature from "@/components/sections/Features";
+import About from "@/components/sections/About";
+import Contact from "@/components/sections/Contact";
+import News from "@/components/sections/News";
 
 export default function Home() {
   return (

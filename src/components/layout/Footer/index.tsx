@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import StairSteps from "@/components/Common/StairSteps";
+import StairSteps from "@/components/ui/StairSteps";
 
 const fadeIn = {
   hidden: { opacity: 0, y: -20 },

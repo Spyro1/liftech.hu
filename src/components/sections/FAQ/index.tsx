@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import FAQItem from "./FAQItem";
-import faqData from "./faqData";
+import faqData from "@/data/faqData";
 
 const FAQ = () => {
   const [activeFaq, setActiveFaq] = useState(1);

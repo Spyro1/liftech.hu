@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-import menuData from "./menuData";
+import menuData from "@/data/menuData";
 
 const Header = () => {
   const [navigationOpen, setNavigationOpen] = useState(false);

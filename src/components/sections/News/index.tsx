@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchNews, NewsPost } from "@/lib/sanity";
-import SectionHeader from "../Common/SectionHeader";
+import SectionHeader from "@/components/ui/SectionHeader";
 
 const News = () => {
   const [posts, setPosts] = useState<NewsPost[]>([]);

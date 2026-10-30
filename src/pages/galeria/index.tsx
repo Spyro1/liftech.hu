@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import Seo from "@/lib/seo";
-import ImageViewer from "@/components/Gallery/ImageViewer";
-import SectionHeader from "@/components/Common/SectionHeader";
+import ImageViewer from "@/components/ui/ImageViewer";
+import SectionHeader from "@/components/ui/SectionHeader";
 
 interface GalleryImage {
   src: string;

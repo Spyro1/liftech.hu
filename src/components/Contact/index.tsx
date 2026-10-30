@@ -3,35 +3,29 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
-const MAX_PHOTOS = 5;
 const MAX_TOTAL_BYTES = 5 * 1024 * 1024;
 
 const Contact = () => {
   const navigate = useNavigate();
-  const [photos, setPhotos] = useState<File[]>([]);
+  const [sending, setSending] = useState(false);
 
   const onFileUploadChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const picked = Array.from(e.target.files ?? []);
-    if (picked.length > MAX_PHOTOS) {
-      toast.error(`Legfeljebb ${MAX_PHOTOS} képet csatolhat`);
-    } else if (picked.reduce((sum, f) => sum + f.size, 0) > MAX_TOTAL_BYTES) {
+    const total = Array.from(e.target.files ?? []).reduce((sum, f) => sum + f.size, 0);
+    if (total > MAX_TOTAL_BYTES) {
       toast.error("A csatolt képek együttes mérete legfeljebb 5 MB lehet");
-    } else {
-      setPhotos(picked);
-      return;
+      e.target.value = "";
     }
-    e.target.value = "";
-    setPhotos([]);
   };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    const formData = new FormData(e.currentTarget);
-    formData.set("form-name", "contact");
-    photos.forEach((file, i) => formData.set(`photo${i + 1}`, file));
+    if (sending) return;
+    setSending(true);
 
     try {
-      const res = await fetch("/", { method: "POST", body: formData });
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        body: new FormData(e.currentTarget),
+      });
       navigate(res.ok ? "/confirmation" : "/error");
     } catch {
       navigate("/error");
@@ -66,7 +60,7 @@ const Contact = () => {
                 Küldjön üzenetet nekünk!
               </h2>
 
-              <form name="contact" onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit}>
                 <p hidden>
                   <label>
                     Ne töltse ki:{" "}
@@ -121,12 +115,13 @@ const Contact = () => {
                 <div className="grid-row-2 grid-col-1 mb-6 grid gap-3 ">
                   <label htmlFor="photos">
                     Töltsön föl képeket a lépcsőjéről (PNG, JPG vagy JPEG
-                    formátumban, legfeljebb 5 db, együtt 5 MB):
+                    formátumban, együtt legfeljebb 5 MB):
                   </label>
                   <input
                     multiple
                     type="file"
                     id="photos"
+                    name="files"
                     onChange={onFileUploadChange}
                     accept=".png, .jpeg, .jpg, .heic, .heif"
                   />
@@ -174,6 +169,7 @@ const Contact = () => {
                   </div>
                   <button
                     type="submit"
+                    disabled={sending}
                     aria-label="üzenet küldése"
                     className="inline-flex items-center gap-2.5 rounded-full bg-black px-6 py-3 font-medium text-white duration-300 ease-in-out hover:bg-blackho dark:bg-btndark"
                   >

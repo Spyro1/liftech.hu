@@ -1,12 +1,12 @@
 # Liftech website
 
-React + Vite + Tailwind single-page site, hosted on **Netlify**, with news managed in **Sanity** and the contact form handled by **Netlify Forms**.
+React + Vite + Tailwind single-page site, hosted on **Netlify**, with news managed in **Sanity** and the contact form sent by a **Netlify Function** through **Resend**.
 
 | Part | Service | Where |
 | --- | --- | --- |
 | Website (static build) | Netlify | https://app.netlify.com/projects/liftech/overview |
 | News / promotions CMS | Sanity | https://liftech.sanity.studio/ |
-| Contact form (submissions + email notification) | Netlify Forms | Netlify -> Forms |
+| Contact form email | Resend, called from `netlify/functions/contact.mts` | https://resend.com |
 | Domain / DNS (currently) | Rackhost | https://www.rackhost.hu |
 
 ## Repository layout
@@ -15,9 +15,9 @@ React + Vite + Tailwind single-page site, hosted on **Netlify**, with news manag
 src/                    React app (pages in src/pages, route table in src/App.tsx)
 src/lib/sanity.ts       Fetches news posts from Sanity (public API, no token)
 src/components/News     News cards shown on the home page
-src/components/Contact  Contact form (posts to Netlify Forms)
-index.html              Contains a hidden copy of the form so Netlify can detect it
-netlify.toml            Build config + SPA fallback redirect
+src/components/Contact  Contact form (posts to /api/contact)
+netlify/functions/      contact.mts - validates the form and sends the email via Resend
+netlify.toml            Build config, functions folder, SPA fallback redirect
 studio-liftech/         Sanity Studio (the editor UI for the marketing team)
 ```
 
@@ -32,7 +32,7 @@ npm start                # http://localhost:5173
 npm run build            # type check + production build into dist/
 ```
 
-The contact form only works on a Netlify deploy (production or a preview URL); Netlify Forms does not exist locally.
+The contact form calls `/api/contact`, which only exists on Netlify. Use a Netlify deploy/preview URL, or run `npx netlify dev` locally with the variables below in `.env`.
 
 Sanity Studio:
 
@@ -51,7 +51,15 @@ Set these in Netlify: **Site configuration -> Environment variables**. Values pr
 | `VITE_SANITY_PROJECT_ID` | no | site | Sanity project id (`tvqj8hy2`) |
 | `VITE_SANITY_DATASET` | no | site | Sanity dataset, `production` |
 
-These two are the only variables the site needs. The contact form needs none. Do not add a Sanity API token as a `VITE_` variable: it would be public. The news dataset is public content and is read without a token. Delete any leftover `SENDGRID_API_KEY`, `VITE_SANITY_API_TOKEN`, `VITE_RECAPTCHA_SITE_KEY`, `RECAPTCHA_*` variables.
+The two `VITE_` variables are the only ones the site itself needs. The email function needs these server-side variables (never give a secret a `VITE_` prefix, because that publishes it in the browser JavaScript):
+
+| Variable | Secret? | Purpose |
+| --- | --- | --- |
+| `RESEND_API_KEY` | **yes** | Resend API key ("Sending access" is enough) |
+| `CONTACT_TO_EMAIL` | no | Recipient inbox; comma-separate several |
+| `CONTACT_FROM_EMAIL` | no | Sender, e.g. `Liftech <info@liftech.hu>`; the domain must be verified in Resend |
+
+ Do not add a Sanity API token as a `VITE_` variable: it would be public. The news dataset is public content and is read without a token. Old variables from earlier setups (`VITE_SANITY_API_TOKEN`, `VITE_RECAPTCHA_SITE_KEY`, `RECAPTCHA_*`) are no longer used and can be deleted from Netlify.
 
 The same non-secret values go into a local `.env` for development (see `.env.example`). `.env` is not committed.
 
@@ -83,25 +91,24 @@ npx sanity login
 npx sanity deploy
 ```
 
-## 3. Contact form (Netlify Forms)
+## 3. Contact form (Netlify Function + Resend)
 
-The form needs no API keys, no email service and no serverless code.
+The browser posts the form (`multipart/form-data`) to `/api/contact`. `netlify/functions/contact.mts` validates it and sends one HTML email through the Resend API with every selected photo attached. No form service and no dependencies are involved.
 
-How it works:
-- `index.html` contains a hidden form named `contact`. At deploy time Netlify scans the HTML, finds it and starts collecting submissions for that form name. (A form that only exists in React is not detected, so do not delete the hidden copy. If you add or rename a field in `src/components/Contact/index.tsx`, add it to the hidden form too, and do not set a `Content-Type` header on the upload request.)
-- The React form posts the fields and the photos to `/` as `multipart/form-data` with `form-name=contact`, then shows the confirmation page. Netlify allows only **one file per field**, so visitors pick up to five photos in one multi-select picker, and on submit the code sends them as `photo1` to `photo5`; those five fields also exist in the hidden form.
-- Spam: a hidden honeypot field (`bot-field`) that real visitors never fill in. Netlify also applies its built-in spam filtering. There is no reCAPTCHA.
+What the function does:
+- Requires name, email, subject and message; replies-to the customer's address.
+- Accepts any number of photos, images only, **5.5 MB in total** (the browser limits it to 5 MB). The ceiling is Netlify's request size limit for functions (about 6 MB), not Resend (40 MB per email).
+- Spam: a hidden honeypot field (`bot-field`); bots that fill it get a fake "ok" and no email. There is no reCAPTCHA and no rate limit. If spam appears, add Cloudflare Turnstile or reCAPTCHA, or rate limiting.
+- Escapes all text before putting it in the HTML email.
 
-Setup in Netlify:
-1. **Forms** in the site menu -> make sure **Form detection** is enabled (it is by default). After the first deploy a form named `contact` should appear.
-2. **Forms -> Form notifications -> Add notification -> Email notification**: event **New form submission**, form **contact** (or any form), **email to notify** = the company inbox. Several addresses are possible by adding several notifications. This is the only place the recipient is configured.
-3. Submissions, including the uploaded photos, are stored under **Forms -> contact** and can be exported as CSV. The notification email contains the fields plus links to the files (photos are not attached to the email).
-4. The email is sent from `formresponses@netlify.com`. Because the form has an `email` field, replying goes to the customer. Because it also has a field named `subject`, the customer's typed subject becomes the email subject (a `subject` field in the HTML overrides any subject set in the dashboard). Rename the field if you want a fixed subject instead.
-5. Optional: Slack or webhook notifications from the same **Submission notifications** page.
+Setup:
+1. Create an account at resend.com and an API key (**API Keys -> Create API Key**, permission **Sending access**). Put it in Netlify as `RESEND_API_KEY`, marked secret. Never give a secret a `VITE_` prefix: that publishes it in the browser JavaScript.
+2. Set `CONTACT_TO_EMAIL` to the company inbox (comma-separate several).
+3. First test without `CONTACT_FROM_EMAIL`: the function sends from `onboarding@resend.dev`, which Resend delivers only to the email address of the Resend account owner.
+4. For real use: Resend -> **Domains -> Add Domain** `liftech.hu`, add the SPF and DKIM DNS records it shows wherever DNS is hosted, wait for "Verified", then set `CONTACT_FROM_EMAIL=Liftech <info@liftech.hu>`.
+5. Check delivery in Resend -> **Emails**, and errors in Netlify -> **Logs -> Functions -> contact**.
 
-Limits: one file per field, 8 MB per request, a 30-second upload timeout, and (free plan) 100 submissions per month. The form itself limits the photos to 5 MB in total. Files that contain personal data need extra security (Netlify recommends its Very Good Security integration). If you need more submissions or want photos attached to the email, the alternative is a Netlify Function + SendGrid (see git history, commit `dd45667`).
-
-Test after every change to the form: submit it on the deployed site, check **Forms -> contact**, and check the notification email (and spam folder).
+The browser shows the confirmation page when the function answers 2xx and the error page otherwise. Unlike Netlify Forms, submissions are **not stored** anywhere: if Resend is down or misconfigured, the message is lost (the customer sees the error page). Phone photos over 5 MB in total are rejected; resizing images in the browser would lift that limit if it becomes a problem.
 
 ## 5. Moving the domain from Rackhost to Netlify
 
@@ -135,7 +142,7 @@ Domain **registration**, **DNS** and **hosting** are three separate things. You 
 1. Netlify -> **Domain management -> HTTPS -> Verify DNS configuration**, then **Provision certificate** (free Let's Encrypt, renews automatically). It can take from a few minutes to a few hours after DNS propagates.
 2. Check propagation: `nslookup liftech.hu` and https://dnschecker.org.
 3. Test `https://liftech.hu` and `https://www.liftech.hu` (one should redirect to the other), a deep link plus refresh (e.g. `/kapcsolat`), the news section, and submit the contact form end to end.
-4. Submit the contact form once on the final domain.
+4. Submit the contact form once on the final domain, and add the Resend DNS records for `liftech.hu` (section 3).
 5. Send a test email to and from `info@liftech.hu` to confirm mail still works.
 6. Keep the Rackhost hosting package for a week or two as a rollback (switching the DNS back restores the old site), then cancel hosting. Cancel the domain registration only if you intend to transfer it elsewhere.
 
@@ -150,11 +157,11 @@ Not required. If you want it later: unlock the domain at Rackhost, get the EPP/a
 | Netlify build fails with "publish directory does not contain expected Next.js build output" | Next.js plugin still enabled, remove it (section 1) |
 | Whole site shows a 401 or "Error - Request ID" page | Netlify site protection / password enabled, or a bad deploy. Check **Site configuration -> Access & security** and the deploy log |
 | News section is missing | Dataset is private, or `VITE_SANITY_PROJECT_ID` / `VITE_SANITY_DATASET` missing (redeploy after adding) |
-| Contact form goes to the error page | Hidden form missing from `index.html` or field names differ, so Netlify rejects the post. Check the deploy log ("Form detection") and **Forms** |
-| Form submits but no email | **Forms -> Form notifications** has no notification for the form; check spam folder |
+| Contact form goes to the error page | The function returned non-2xx: check **Logs -> Functions -> contact** (missing `RESEND_API_KEY`/`CONTACT_TO_EMAIL`, unverified sender domain, photos over 5 MB) |
+| Form sends but no email | Check Resend -> Emails and the spam folder; with `onboarding@resend.dev` only the Resend account owner's address receives mail |
 | HTTPS warning after the domain move | Certificate not provisioned yet, rerun **Verify DNS configuration** |
 
 ## Known state / to do
 
-- Contact form notifications are configured in the Netlify dashboard, not in code. Make sure the notification address is the right company inbox.
-- The Netlify docs do not say whether the notification email attaches or only links the uploaded photos. Test one submission with photos and check the email.
+- The Resend flow is untested until `RESEND_API_KEY`, `CONTACT_TO_EMAIL` and (for production) the verified domain are set. Send one submission with several photos and check that all attachments arrive.
+- Submissions are not stored. If you want a backup, add a copy to a spreadsheet/Sanity or switch back to Netlify Forms.

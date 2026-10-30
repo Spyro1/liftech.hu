@@ -6,7 +6,7 @@ const About = () => {
       {/* <!-- ===== About Start ===== --> */}
       <section className="overflow-hidden bg-mist py-20 lg:py-25 xl:py-30">
         <div className="mx-auto max-w-c-1235 px-4 md:px-8 xl:px-0">
-          <div className="flex items-center gap-8 lg:gap-32.5">
+          <div className="flex flex-col gap-10 md:flex-row md:items-center md:gap-8 lg:gap-32.5">
             <motion.div
               variants={{
                 hidden: {
@@ -23,7 +23,7 @@ const About = () => {
               whileInView="visible"
               transition={{ duration: 0.5, delay: 0.1 }}
               viewport={{ once: true }}
-              className="animate_left relative mx-auto hidden aspect-[588/526.5] md:block md:w-1/2"
+              className="animate_left relative mx-auto block aspect-[588/526.5] w-full md:w-1/2"
             >
               <div
                 className="absolute -bottom-4 -left-4 h-full w-full bg-navy"
@@ -75,7 +75,7 @@ const About = () => {
                 kívüli parkolásra van szükség.
               </h3>
               <Link
-                to=""
+                to="/termekek"
                 className="inline-flex items-center gap-2.5 bg-navy px-7.5 py-3 font-display text-xl font-semibold uppercase tracking-wider text-white duration-300 ease-in-out hover:bg-accent"
               >
                 Tudjon meg többet lépcsőliftjeinkről!

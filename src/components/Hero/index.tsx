@@ -6,8 +6,8 @@ const Hero = () => {
     <>
       <section className="overflow-hidden bg-mist pb-20 pt-35 md:pt-40 xl:pb-25 xl:pt-46">
         <div className="mx-auto max-w-c-1390 px-4 md:px-8 2xl:px-0">
-          <div className="flex lg:items-center lg:gap-8 xl:gap-32.5">
-            <div className="md:w-1/2">
+          <div className="flex flex-col gap-10 lg:flex-row lg:items-center lg:gap-8 xl:gap-32.5">
+            <div className="lg:w-1/2">
               <div className="py-10">
                 <h4 className="mb-4.5 flex items-center gap-3 text-metatitle font-semibold uppercase tracking-[0.3em] text-navy">
                   <StairSteps className="text-navy" />A Liftech csapatától:
@@ -40,11 +40,11 @@ const Hero = () => {
                 </Link>
               </div>
             </div>
-            <div className="animate_right hidden md:w-1/2 lg:block">
+            <div className="animate_right lg:w-1/2">
               <div className="relative 2xl:-mr-7.5">
                 {/* offset navy tile behind the photo, echoing the logo's stair tiles */}
                 <div
-                  className="absolute -bottom-5 -left-5 h-full w-full bg-navy"
+                  className="absolute -bottom-3 -left-3 h-full w-full bg-navy lg:-bottom-5 lg:-left-5"
                   aria-hidden="true"
                 />
                 <div className="relative mx-auto aspect-[800/512]">

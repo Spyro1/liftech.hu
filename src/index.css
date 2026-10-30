@@ -3,6 +3,12 @@
 @tailwind utilities;
 
 @layer base {
+  /* clip (not hidden) keeps position:fixed/sticky working while preventing sideways scroll */
+  html,
+  body {
+    overflow-x: clip;
+  }
+
   body {
     @apply relative z-1 font-sans text-regular font-normal text-slate antialiased;
   }
@@ -23,8 +29,9 @@
 @layer components {
   /* header submenu: flat, square, navy accent line */
   .dropdown {
-    @apply -left-7.5 mt-2 hidden min-w-max flex-col gap-4 border border-line bg-white px-8 py-5 shadow-sm duration-300 ease-in
-    xl:invisible xl:absolute xl:mt-0 xl:flex xl:w-[250px] xl:translate-y-10 xl:border-t-2 xl:border-t-navy xl:opacity-0
+    /* mobile: collapsed by default, header toggles max-xl:max-h-96 etc. to expand it inline */
+    @apply -left-7.5 flex max-h-0 min-w-max flex-col gap-4 overflow-hidden border-0 border-line bg-white px-8 py-0 opacity-0 transition-all duration-300 ease-in-out
+    xl:invisible xl:absolute xl:mt-0 xl:max-h-none xl:w-[250px] xl:translate-y-10 xl:overflow-visible xl:border xl:border-t-2 xl:border-t-navy xl:py-5 xl:opacity-0 xl:shadow-sm
     xl:group-hover:visible xl:group-hover:translate-y-6.5 xl:group-hover:opacity-100;
   }
 
@@ -46,12 +53,6 @@
   }
   .stair-steps::after {
     @apply left-6 top-4 opacity-40;
-  }
-}
-
-@media (max-width: 1280px) {
-  .navbar {
-    @apply max-h-[400px] overflow-y-scroll;
   }
 }
 

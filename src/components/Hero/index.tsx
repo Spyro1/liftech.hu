@@ -25,12 +25,18 @@ const Hero = () => {
                   vísznek otthaikba, elérhető áron.
                 </p>
               </div>
-              <div className="mt-7 flex items-center gap-6 xl:mt-0">
+              <div className="mt-7 flex flex-wrap items-center gap-4 xl:mt-0">
                 <Link
                   to="/termekek"
                   className="flex items-center justify-center bg-navy px-8 py-3.5 font-display text-xl font-semibold uppercase tracking-wider text-white duration-300 ease-in-out hover:bg-accent"
                 >
                   Nézze meg termékeinket!
+                </Link>
+                <Link
+                  to="/kapcsolat"
+                  className="flex items-center justify-center border-2 border-navy px-8 py-3 font-display text-xl font-semibold uppercase tracking-wider text-navy duration-300 ease-in-out hover:bg-navy hover:text-white"
+                >
+                  Lépjen kapcsolatba velünk
                 </Link>
               </div>
             </div>

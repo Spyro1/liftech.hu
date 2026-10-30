@@ -42,6 +42,10 @@ npm install
 npm run dev              # http://localhost:3333
 ```
 
+## Continuous integration
+
+`.github/workflows/ci.yml` runs on every push to `main` and on every pull request: `npm ci`, `npm run build` (TypeScript check + Vite build), a compile check of `netlify/functions/contact.mts`, and a TypeScript check of `studio-liftech`. It needs no secrets. It does not deploy; Netlify deploys by itself on pushes to `main`, so a red CI run on a pull request is the signal not to merge. To make that binding, enable branch protection on `main` and require the `site` and `studio` checks (GitHub -> Settings -> Branches).
+
 ## Environment variables
 
 Set these in Netlify: **Site configuration -> Environment variables**. Values prefixed with `VITE_` are baked into the public JavaScript at build time, so never put secrets in them. After changing any variable, trigger a new deploy (**Deploys -> Trigger deploy -> Clear cache and deploy site**).

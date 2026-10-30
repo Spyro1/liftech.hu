@@ -31,37 +31,30 @@ const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    grecaptcha.enterprise.ready(async () => {
-      const token = await grecaptcha.enterprise.execute(import.meta.env.VITE_RECAPTCHA_SITE_KEY, {action: 'SUBMIT'});
-  
-        
-        let formData = new FormData();
-        if(files){
-          for( const file of files){
-            formData.append("files", file);
-            formData.append("names", file.name);
-          }
-        }
-        formData.append("name", name);
-        formData.append("email", email);
-        formData.append("subject", subject);
-        formData.append("message", message);
-        formData.append("phone", phone);
-        formData.append("token", token);
-
-        const res = await fetch("/api/sendgrid", {
-          method: "POST",
-          body: formData,
-        });
-      if (!res.ok) {
-        navigate("/error");
-        return;
+    let formData = new FormData();
+    if (files) {
+      for (const file of files) {
+        formData.append("files", file);
+        formData.append("names", file.name);
       }
-      navigate((await res.json()).location);
+    }
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("subject", subject);
+    formData.append("message", message);
+    formData.append("phone", phone);
+
+    const res = await fetch("/api/sendgrid", {
+      method: "POST",
+      body: formData,
     });
 
-
-      };
+    if (!res.ok) {
+      navigate("/error");
+      return;
+    }
+    navigate((await res.json()).location);
+  };
   return (
     <>
       {/* <!-- ===== Contact Start ===== --> */}

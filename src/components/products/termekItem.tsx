@@ -23,7 +23,7 @@ const BlogItem = ({ blog }: { blog: Blog }) => {
         whileInView="visible"
         transition={{ duration: 0.5, delay: 0.5 }}
         viewport={{ once: true }}
-        className="animate_top group border border-line border-t-4 border-t-navy bg-white p-4 pb-9 transition-all hover:-translate-y-1 hover:border-t-accent hover:shadow-sm"
+        className="animate_top group card-top p-4 pb-9 transition-all hover:-translate-y-1 hover:before:bg-accent hover:shadow-sm"
       >
         <Link to={"/" + slug} className="relative block aspect-[368/239]">
           <img src={mainImage} alt={title}   className="absolute inset-0 h-full w-full" loading="lazy" />

@@ -93,7 +93,7 @@ const FAQ = () => {
               viewport={{ once: true }}
               className="animate_right md:w-3/5 lg:w-1/2"
             >
-              <div className="border border-line border-t-4 border-t-navy bg-white">
+              <div className="card-top">
                 {faqData.map((faq, key) => (
                   <FAQItem
                     key={key}

@@ -56,6 +56,16 @@
     xl:group-hover:visible xl:group-hover:translate-y-6.5 xl:group-hover:opacity-100;
   }
 
+  /* square card with a flat navy top bar; a pseudo-element avoids the mitred corners of a thick border-top */
+  .card-top {
+    @apply relative border border-line bg-white;
+  }
+
+  .card-top::before {
+    content: "";
+    @apply absolute -left-px -right-px -top-px h-1 bg-navy transition-colors;
+  }
+
   /* logo motif: three tiles stepping diagonally (use with <StairSteps />) */
   .stair-steps {
     @apply relative inline-block h-6 w-10;

@@ -62,7 +62,7 @@ const Contact = () => {
               whileInView="visible"
               transition={{ duration: 1, delay: 0.1 }}
               viewport={{ once: true }}
-              className="animate_top w-full min-w-0 border border-t-4 border-line border-t-navy bg-white p-5 sm:p-8 md:w-3/5 lg:w-3/4 xl:p-15"
+              className="animate_top w-full min-w-0 card-top p-5 sm:p-8 md:w-3/5 lg:w-3/4 xl:p-15"
             >
               <h2 className="mb-8 font-display text-3xl font-bold uppercase text-navy sm:text-4xl md:mb-12.5 xl:text-sectiontitle2">
                 Küldjön üzenetet nekünk!

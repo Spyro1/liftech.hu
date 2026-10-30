@@ -25,7 +25,7 @@ const News = () => {
           {posts.map((post) => (
             <div
               key={post._id}
-              className="border border-line border-t-4 border-t-navy bg-white p-4 pb-9"
+              className="card-top p-4 pb-9"
             >
               <img
                 src={`${post.image}?w=800&auto=format`}

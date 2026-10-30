@@ -9,7 +9,7 @@ const SingleBlogPage = () => {
         <div className="mx-auto max-w-c-1390 px-4 md:px-8 2xl:px-0">
           <div className="flex flex-col-reverse gap-7.5 lg:flex-row xl:gap-12.5">
             <div className="md:w-1/2 lg:w-[32%]">
-              <div className="animate_top mb-10 border border-line border-t-4 border-t-navy bg-white p-9">
+              <div className="animate_top mb-10 card-top p-9">
                 <h3 className="mb-7.5 font-display text-3xl font-bold uppercase tracking-wide text-navy">
                   Technikai információk
                 </h3>
@@ -62,7 +62,7 @@ const SingleBlogPage = () => {
             </div>
 
             <div className="lg:w-2/3">
-              <div className="animate_top border border-line border-t-4 border-t-navy bg-white p-7.5 md:p-10">
+              <div className="animate_top card-top p-7.5 md:p-10">
                     <h2 className="mb-5 mt-11 font-display text-4xl font-bold uppercase text-navy 2xl:text-sectiontitle2">
                     Használt lépcsőliftek
                 </h2>

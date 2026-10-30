@@ -23,21 +23,43 @@ const Header = () => {
     window.addEventListener("scroll", handleStickyMenu);
   });
 
+  // Close the mobile menu (and submenu) after any link inside the header is clicked
+  const handleHeaderClick = (e: React.MouseEvent<HTMLElement>) => {
+    if ((e.target as HTMLElement).closest("a")) {
+      setNavigationOpen(false);
+      setDropdownToggler(false);
+    }
+  };
+
   return (
     <header
-      className={`fixed left-0 top-0 z-99999 w-full py-7 ${
-        stickyMenu
-          ? "bg-white !py-4 shadow transition duration-100 dark:bg-black"
-          : ""
+      onClick={handleHeaderClick}
+      className={`fixed left-0 top-0 z-99999 w-full border-b border-line bg-white py-3.5 ${
+        stickyMenu ? "!py-2 shadow-sm transition-all duration-100" : ""
       }`}
     >
       <div className="relative mx-auto max-w-c-1390 items-center justify-between px-4 md:px-8 xl:flex 2xl:px-0">
-        <div className="flex w-full items-center justify-between xl:w-1/4">
-          <a href="/">
-            <h2 className="text-xl">Liftech Group Kft.</h2>
-         </a>
+        <div className="flex w-full items-center justify-between xl:w-auto">
+          <Link
+            to="/"
+            className="flex items-center gap-4"
+            aria-label="Liftech főoldal"
+          >
+            <img
+              src="/images/logo/liftech_logo.webp"
+              alt="Liftech lépcsőliftek"
+              width={41}
+              height={56}
+              className={`w-auto transition-all duration-100 ${
+                stickyMenu ? "h-11" : "h-14"
+              }`}
+            />
+            <span className="font-display text-2xl font-bold uppercase leading-none tracking-wide text-navy">
+              Liftech Group Kft.
+            </span>
+          </Link>
 
-        {/* <!-- Hamburger Toggle BTN --> */}
+          {/* <!-- Hamburger Toggle BTN --> */}
           <button
             aria-label="hamburger Toggler"
             className="block xl:hidden"
@@ -46,29 +68,29 @@ const Header = () => {
             <span className="relative block h-5.5 w-5.5 cursor-pointer">
               <span className="absolute right-0 block h-full w-full">
                 <span
-                  className={`relative left-0 top-0 my-1 block h-0.5 rounded-sm bg-black delay-[0] duration-200 ease-in-out dark:bg-white ${
+                  className={`relative left-0 top-0 my-1 block h-0.5 bg-navy delay-[0] duration-200 ease-in-out ${
                     !navigationOpen ? "!w-full delay-300" : "w-0"
                   }`}
                 ></span>
                 <span
-                  className={`relative left-0 top-0 my-1 block h-0.5 rounded-sm bg-black delay-150 duration-200 ease-in-out dark:bg-white ${
+                  className={`relative left-0 top-0 my-1 block h-0.5 bg-navy delay-150 duration-200 ease-in-out ${
                     !navigationOpen ? "delay-400 !w-full" : "w-0"
                   }`}
                 ></span>
                 <span
-                  className={`relative left-0 top-0 my-1 block h-0.5 rounded-sm bg-black delay-200 duration-200 ease-in-out dark:bg-white ${
+                  className={`relative left-0 top-0 my-1 block h-0.5 bg-navy delay-200 duration-200 ease-in-out ${
                     !navigationOpen ? "!w-full delay-500" : "w-0"
                   }`}
                 ></span>
               </span>
               <span className="du-block absolute right-0 h-full w-full rotate-45">
                 <span
-                  className={`absolute left-2.5 top-0 block h-full w-0.5 rounded-sm bg-black delay-300 duration-200 ease-in-out dark:bg-white ${
+                  className={`absolute left-2.5 top-0 block h-full w-0.5 bg-navy delay-300 duration-200 ease-in-out ${
                     !navigationOpen ? "!h-0 delay-[0]" : "h-full"
                   }`}
                 ></span>
                 <span
-                  className={`delay-400 absolute left-0 top-2.5 block h-0.5 w-full rounded-sm bg-black duration-200 ease-in-out dark:bg-white ${
+                  className={`delay-400 absolute left-0 top-2.5 block h-0.5 w-full bg-navy duration-200 ease-in-out ${
                     !navigationOpen ? "!h-0 delay-200" : "h-0.5"
                   }`}
                 ></span>
@@ -80,25 +102,25 @@ const Header = () => {
 
         {/* Nav Menu Start   */}
         <div
-          className={`invisible h-0 w-full items-center justify-between xl:visible xl:flex xl:h-auto xl:w-full ${
+          className={`invisible h-0 w-full items-center justify-end xl:visible xl:flex xl:h-auto xl:w-full ${
             navigationOpen &&
-            "navbar !visible mt-4 h-auto max-h-[400px] rounded-md bg-white p-7.5 shadow-solid-5 dark:bg-blacksection xl:h-auto xl:p-0 xl:shadow-none xl:dark:bg-transparent"
+            "navbar !visible mt-4 h-auto max-h-[400px] border border-line bg-white p-7.5 shadow-sm xl:h-auto xl:border-0 xl:p-0 xl:shadow-none"
           }`}
         >
-          <nav>
-            <ul className="flex flex-col gap-5 xl:flex-row text-xl xl:items-center xl:gap-10">
+          <nav className="xl:mr-10">
+            <ul className="flex flex-col gap-5 font-display text-xl font-semibold uppercase tracking-wider xl:flex-row xl:items-center xl:gap-9">
               {menuData.map((menuItem, key) => (
                 <li key={key} className={menuItem.submenu && "group relative"}>
                   {menuItem.submenu ? (
                     <>
                       <button
                         onClick={() => setDropdownToggler(!dropdownToggler)}
-                        className="flex cursor-pointer items-center justify-between gap-3 text-xl hover:text-custom"
+                        className="flex cursor-pointer items-center justify-between gap-3 uppercase tracking-wider text-ink hover:text-accent"
                       >
                         {menuItem.title}
                         <span>
                           <svg
-                            className="h-3 w-3 cursor-pointer fill-waterloo group-hover:fill-custom"
+                            className="h-3 w-3 cursor-pointer fill-slate group-hover:fill-accent"
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 512 512"
                           >
@@ -111,7 +133,10 @@ const Header = () => {
                         className={`dropdown ${dropdownToggler ? "flex" : ""}`}
                       >
                         {menuItem.submenu.map((item, key) => (
-                          <li key={key} className="text-xl hover:text-custom">
+                          <li
+                            key={key}
+                            className="text-xl text-ink hover:text-accent"
+                          >
                             <Link to={item.path || "#"}>{item.title}</Link>
                           </li>
                         ))}
@@ -122,8 +147,8 @@ const Header = () => {
                       to={`${menuItem.path}`}
                       className={
                         pathUrl === menuItem.path
-                          ? "text-custom hover:text-custom"
-                          : "hover:text-custom"
+                          ? "border-b-2 border-navy pb-1 text-navy"
+                          : "border-b-2 border-transparent pb-1 text-ink hover:text-accent"
                       }
                     >
                       {menuItem.title}
@@ -135,11 +160,10 @@ const Header = () => {
           </nav>
 
           <div className="mt-7 flex items-center gap-6 xl:mt-0">
-
-            <Link to="tel:+36301495552"
-                  className="flex items-center justify-center text-xl text-custom hover:text-primaryho"
+            <Link
+              to="tel:+36301495552"
+              className="flex items-center justify-center bg-navy px-6 py-3 font-display text-xl font-semibold tracking-wider text-white transition-colors hover:bg-accent"
             >
-              
               +36 30 149 5552
             </Link>
           </div>
@@ -148,7 +172,5 @@ const Header = () => {
     </header>
   );
 };
-
-// w-full delay-300
 
 export default Header;

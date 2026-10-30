@@ -4,7 +4,7 @@ const About = () => {
   return (
     <>
       {/* <!-- ===== About Start ===== --> */}
-      <section className="overflow-hidden pb-20 lg:pb-25 xl:pb-30">
+      <section className="overflow-hidden bg-mist py-20 lg:py-25 xl:py-30">
         <div className="mx-auto max-w-c-1235 px-4 md:px-8 xl:px-0">
           <div className="flex items-center gap-8 lg:gap-32.5">
             <motion.div
@@ -24,11 +24,17 @@ const About = () => {
               transition={{ duration: 0.5, delay: 0.1 }}
               viewport={{ once: true }}
               className="animate_left relative mx-auto hidden aspect-[588/526.5] md:block md:w-1/2"
-            >s
-  l            <img
+            >
+              <div
+                className="absolute -bottom-4 -left-4 h-full w-full bg-navy"
+                aria-hidden="true"
+              />
+              <img
                 src="/images/features/alpha.webp"
                 alt="Alpha lépcsőlift felszerelve"
-                className="absolute inset-0 h-full w-full dark:hidden" loading="lazy" />
+                className="absolute inset-0 h-full w-full object-cover"
+                loading="lazy"
+              />
             </motion.div>
             <motion.div
               variants={{
@@ -48,36 +54,45 @@ const About = () => {
               viewport={{ once: true }}
               className="animate_right md:w-1/2"
             >
-              <span className="font-medium uppercase text-black dark:text-white">
-                <span className="mb-4 mr-4 inline-flex rounded-full bg-primaryho px-4.5 py-1 text-metatitle uppercase text-white ">
+              <span className="font-semibold uppercase tracking-[0.2em] text-navy">
+                <span className="mb-4 mr-4 inline-flex bg-accent px-4.5 py-1 text-metatitle uppercase tracking-widest text-white ">
                   ÚJ
                 </span>{" "}
                 Kanyarodó lépcső? Mi megoldjuk!
               </span>
-              <h2 className="relative mb-6 text-3xl font-bold text-black dark:text-white xl:text-hero">
-                Lépcsőlift otthonához:
-                <span className="relative inline-block before:absolute before:bottom-2.5 before:left-0 before:-z-1 before:h-3 before:w-full before:bg-titlebg dark:before:bg-titlebgdark">
+              <h2 className="relative mb-6 font-display text-5xl font-bold uppercase leading-[0.95] text-navy xl:text-hero">
+                Lépcsőlift otthonához:{" "}
+                <span className="relative inline-block before:absolute before:bottom-1 before:left-0 before:-z-1 before:h-3 before:w-full before:bg-accent/25">
                   Alpha
                 </span>
               </h2>
-                  <h3 className="mb-5.5 text-metatitle2 text-black dark:text-white">
-               Az Alpha lépcsőlift megszünteti a lépcső akadályát, azoknál a lépcső típusoknál, ahol az Essental(Egyenes) típus nem alkalmazható. Biztonságos és könnyű hozzáférést biztosít más szintekre, ezt a lépcsőliftet kanyarodó lépcsőkre, közbenső lépcsőfokokra, vagy akár akkor is, ha diszkrét, az úttesten kívüli parkolásra van szükség.
-                  </h3>
+              <h3 className="mb-5.5 text-metatitle2 font-normal text-ink">
+                Az Alpha lépcsőlift megszünteti a lépcső akadályát, azoknál a
+                lépcső típusoknál, ahol az Essental(Egyenes) típus nem
+                alkalmazható. Biztonságos és könnyű hozzáférést biztosít más
+                szintekre, ezt a lépcsőliftet kanyarodó lépcsőkre, közbenső
+                lépcsőfokokra, vagy akár akkor is, ha diszkrét, az úttesten
+                kívüli parkolásra van szükség.
+              </h3>
               <Link
                 to=""
-                className="inline-flex gap-2.5 items-center w-3/4 rounded-full bg-custom px-7.5 py-2.5 text-lg text-white duration-300 ease-in-out hover:bg-primaryho"
+                className="inline-flex items-center gap-2.5 bg-navy px-7.5 py-3 font-display text-xl font-semibold uppercase tracking-wider text-white duration-300 ease-in-out hover:bg-accent"
               >
-               Tudjon meg többet lépcsőliftjeinkről! 
-              <img src="/images/icon/icon-arrow-dark.svg" alt="nyíl" width={30} height={30} loading="lazy" />
+                Tudjon meg többet lépcsőliftjeinkről!
+                <img
+                  src="/images/icon/icon-arrow-dark.svg"
+                  alt="nyíl"
+                  width={30}
+                  height={30}
+                  loading="lazy"
+                />
               </Link>
-
-             </motion.div>
+            </motion.div>
           </div>
         </div>
       </section>
       {/* <!-- ===== About End ===== --> */}
-
-           </>
+    </>
   );
 };
 

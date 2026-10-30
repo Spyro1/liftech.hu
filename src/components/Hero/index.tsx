@@ -1,51 +1,55 @@
- import { useState } from "react";
 import { Link } from "react-router-dom";
+import StairSteps from "@/components/Common/StairSteps";
+
 const Hero = () => {
-  const [email, setEmail] = useState("");
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-  };
-
   return (
     <>
-      <section className="overflow-hidden pb-20 pt-35 md:pt-40 xl:pb-25 xl:pt-46">
+      <section className="overflow-hidden bg-mist pb-20 pt-35 md:pt-40 xl:pb-25 xl:pt-46">
         <div className="mx-auto max-w-c-1390 px-4 md:px-8 2xl:px-0">
           <div className="flex lg:items-center lg:gap-8 xl:gap-32.5">
-            <div className=" md:w-1/2">
-             <div className="py-10">
-                <h4 className="mb-4.5 text-lg font-medium text-black dark:text-white">
-                A Liftech csapatától:
-              </h4>
-              <h1 className="mb-5 pr-16 text-3xl font-bold text-black dark:text-white xl:text-hero ">
-                 Kiváló minőségű lépcsőliftek és platformliftek{"   "}
-                <span className="relative inline-block before:absolute before:bottom-2.5 before:left-0 before:-z-1 before:h-3 before:w-full before:bg-titlebg dark:before:bg-titlebgdark ">
-                  Önre szabva! 
-                </span>
-              </h1>
-              <p>
-               Legyen szó kültéri vagy beltéri, kanyarodó vagy egyenes, használt vagy új liftről, biztos lehet abban, hogy
-               nálunk otthonra talál igényeivel. Segítőkész szakembereink kényelmet vísznek otthaikba, elérhető áron.
-              </p>
-             </div>
-            <div className="mt-7 flex items-center gap-6 xl:mt-0">
-              <Link
-                to="/termekek"
-                className="flex items-center justify-center rounded-full bg-custom px-7.5 py-2.5 text-regular text-white duration-300 ease-in-out hover:bg-primaryho"
-              >
-               Nézze meg termékeinket! 
-              </Link>
-          </div>
-           </div>
+            <div className="md:w-1/2">
+              <div className="py-10">
+                <h4 className="mb-4.5 flex items-center gap-3 text-metatitle font-semibold uppercase tracking-[0.3em] text-navy">
+                  <StairSteps className="text-navy" />A Liftech csapatától:
+                </h4>
+                <h1 className="mb-5 font-display text-5xl font-bold uppercase leading-[0.95] text-navy xl:text-hero">
+                  Kiváló minőségű lépcsőliftek és platformliftek{"   "}
+                  <span className="relative inline-block before:absolute before:bottom-1 before:left-0 before:-z-1 before:h-3 before:w-full before:bg-accent/25">
+                    Önre szabva!
+                  </span>
+                </h1>
+                <p>
+                  Legyen szó kültéri vagy beltéri, kanyarodó vagy egyenes,
+                  használt vagy új liftről, biztos lehet abban, hogy nálunk
+                  otthonra talál igényeivel. Segítőkész szakembereink kényelmet
+                  vísznek otthaikba, elérhető áron.
+                </p>
+              </div>
+              <div className="mt-7 flex items-center gap-6 xl:mt-0">
+                <Link
+                  to="/termekek"
+                  className="flex items-center justify-center bg-navy px-8 py-3.5 font-display text-xl font-semibold uppercase tracking-wider text-white duration-300 ease-in-out hover:bg-accent"
+                >
+                  Nézze meg termékeinket!
+                </Link>
+              </div>
+            </div>
             <div className="animate_right hidden md:w-1/2 lg:block">
               <div className="relative 2xl:-mr-7.5">
-                <div className=" mx-auto relative aspect-[800/512] ">
+                {/* offset navy tile behind the photo, echoing the logo's stair tiles */}
+                <div
+                  className="absolute -bottom-5 -left-5 h-full w-full bg-navy"
+                  aria-hidden="true"
+                />
+                <div className="relative mx-auto aspect-[800/512]">
                   <img
-                    className="absolute inset-0 h-full w-full shadow-solid-l"
+                    className="absolute inset-0 h-full w-full object-cover"
                     src="/images/hero/hero_img.webp"
-                    alt="Szakember beszereli a lépcsőfelvonót" loading="lazy" />
+                    alt="Szakember beszereli a lépcsőfelvonót"
+                    loading="lazy"
+                  />
                 </div>
-                              </div>
+              </div>
             </div>
           </div>
         </div>

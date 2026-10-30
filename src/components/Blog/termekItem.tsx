@@ -23,14 +23,14 @@ const BlogItem = ({ blog }: { blog: Blog }) => {
         whileInView="visible"
         transition={{ duration: 0.5, delay: 0.5 }}
         viewport={{ once: true }}
-        className="animate_top rounded-lg bg-white p-4 pb-9 shadow-solid-8 dark:bg-blacksection"
+        className="animate_top group border border-line border-t-4 border-t-navy bg-white p-4 pb-9 transition-all hover:-translate-y-1 hover:border-t-accent hover:shadow-sm"
       >
         <Link to={"/" + slug} className="relative block aspect-[368/239]">
           <img src={mainImage} alt={title}   className="absolute inset-0 h-full w-full" loading="lazy" />
         </Link>
 
         <div className="px-4">
-          <h3 className="mb-3.5 mt-7.5 line-clamp-2 inline-block text-lg font-medium text-black duration-300 hover:text-primary dark:text-white dark:hover:text-primary xl:text-itemtitle2">
+          <h3 className="mb-3.5 mt-7.5 line-clamp-2 inline-block font-display text-2xl font-bold uppercase tracking-wide text-navy duration-300 hover:text-accent xl:text-itemtitle2">
             <Link to={"/" + slug}>
               {`${title.slice(0, 40)}`}
             </Link>

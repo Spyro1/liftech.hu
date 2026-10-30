@@ -20,12 +20,12 @@ const FAQ = () => {
               
               src="/images/shape/shape-dotted-light.svg"
               alt="Dotted"
-              className="absolute inset-0 h-full w-full dark:hidden" loading="lazy" />
+              className="absolute inset-0 h-full w-full" loading="lazy" />
             <img
               
               src="/images/shape/shape-dotted-light.svg"
               alt="Dotted"
-              className="absolute inset-0 h-full w-full hidden dark:block" loading="lazy" />
+              className="absolute inset-0 h-full w-full hidden" loading="lazy" />
           </div>
           <div className="flex flex-wrap gap-8 md:flex-nowrap md:items-center xl:gap-32.5">
             <motion.div
@@ -46,19 +46,19 @@ const FAQ = () => {
               viewport={{ once: true }}
               className="animate_left md:w-2/5 lg:w-1/2"
             >
-              <span className="font-medium uppercase text-black dark:text-white">
+              <span className="font-semibold uppercase tracking-[0.2em] text-navy">
                 OUR FAQS
               </span>
-              <h2 className="relative mb-6 text-3xl font-bold text-black dark:text-white xl:text-hero">
+              <h2 className="relative mb-6 font-display text-5xl font-bold uppercase text-navy xl:text-hero">
                 Frequently Asked
-                <span className="relative inline-block before:absolute before:bottom-2.5 before:left-0 before:-z-1 before:h-3 before:w-full before:bg-titlebg2 dark:before:bg-titlebgdark">
+                <span className="relative inline-block before:absolute before:bottom-1 before:left-0 before:-z-1 before:h-3 before:w-full before:bg-accent/25">
                   Questions
                 </span>
               </h2>
 
               <a
                 href="#"
-                className="group mt-7.5 inline-flex items-center gap-2.5 text-black hover:text-primary dark:text-white dark:hover:text-primary"
+                className="group mt-7.5 inline-flex items-center gap-2.5 font-semibold text-navy hover:text-accent"
               >
                 <span className="duration-300 group-hover:pr-2">Know More</span>
                 <svg
@@ -93,7 +93,7 @@ const FAQ = () => {
               viewport={{ once: true }}
               className="animate_right md:w-3/5 lg:w-1/2"
             >
-              <div className="rounded-lg bg-white shadow-solid-8 dark:border dark:border-strokedark dark:bg-blacksection">
+              <div className="border border-line border-t-4 border-t-navy bg-white">
                 {faqData.map((faq, key) => (
                   <FAQItem
                     key={key}

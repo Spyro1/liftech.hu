@@ -72,9 +72,9 @@ return (
       <section className="pb-20 pt-35 lg:pb-25 lg:pt-45 xl:pb-30 xl:pt-50">
         <div className="mx-auto max-w-c-1390 px-4 md:px-8 2xl:px-0">
             <div className="">
-              <div className="animate_top rounded-md border border-stroke bg-white p-7.5 shadow-solid-13 dark:border-strokedark dark:bg-blacksection md:p-10">
+              <div className="animate_top border border-line border-t-4 border-t-navy bg-white p-7.5 md:p-10">
                 <div className="mb-10 w-full overflow-hidden ">
-                <h2 className=" mt-11 text-4xl text-center font-semibold text-black dark:text-white 2xl:text-sectiontitle2">
+                <h2 className=" mt-11 text-center font-display text-5xl font-bold uppercase text-navy 2xl:text-sectiontitle2">
 Tekintse meg eddigi munkáinkat
                 </h2>    <div className=" flex flex-col">
 

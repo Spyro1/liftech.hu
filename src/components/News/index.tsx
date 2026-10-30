@@ -25,18 +25,18 @@ const News = () => {
           {posts.map((post) => (
             <div
               key={post._id}
-              className="rounded-lg bg-white p-4 pb-9 shadow-solid-8 dark:bg-blacksection"
+              className="border border-line border-t-4 border-t-navy bg-white p-4 pb-9"
             >
               <img
                 src={`${post.image}?w=800&auto=format`}
                 alt={post.title}
-                className="aspect-[4/5] w-full rounded-md object-cover"
+                className="aspect-[4/5] w-full object-cover"
                 loading="lazy"
               />
               <div className="px-4">
-                <h3 className="mb-3.5 mt-7.5 text-lg font-medium text-black dark:text-white xl:text-itemtitle2">
+                <h3 className="mb-3.5 mt-7.5 font-display text-2xl font-bold uppercase tracking-wide text-navy xl:text-itemtitle2">
                   {post.link ? (
-                    <a href={post.link} className="duration-300 hover:text-primary">
+                    <a href={post.link} className="duration-300 hover:text-accent">
                       {post.title}
                     </a>
                   ) : (

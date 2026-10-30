@@ -3,7 +3,6 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
-import Lines from "@/components/Lines";
 import ScrollToTop from "@/components/ScrollToTop";
 import Home from "@/pages/home";
 import Rolunk from "@/pages/rolunk";
@@ -42,7 +41,6 @@ export default function App() {
 
   return (
     <>
-      <Lines />
       <Header />
       <Toaster position="top-center" reverseOrder={false} />
       <Routes>

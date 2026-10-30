@@ -1,176 +1,132 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import StairSteps from "@/components/Common/StairSteps";
+
+const fadeIn = {
+  hidden: { opacity: 0, y: -20 },
+  visible: { opacity: 1, y: 0 },
+};
+
+const quickLinks = [
+  { title: "Főoldal", path: "/" },
+  { title: "Magunkról", path: "/rolunk" },
+  { title: "Új lépcsőliftek", path: "/uj-lepcsoliftek" },
+  { title: "Platform liftek", path: "/platformliftek" },
+  { title: "Használt lépcsőliftek", path: "/hasznalt-lepcsoliftek" },
+];
 
 const Footer = () => {
   return (
     <>
-      <footer className="border-t border-stroke bg-white dark:border-strokedark dark:bg-blacksection">
+      <footer className="bg-navy-deep text-white/70">
         <div className="mx-auto max-w-c-1390 px-4 md:px-8 2xl:px-0">
           {/* <!-- Footer Top --> */}
           <div className="py-20 lg:py-25">
             <div className="flex flex-wrap gap-8 lg:justify-between lg:gap-0">
               <motion.div
-                variants={{
-                  hidden: {
-                    opacity: 0,
-                    y: -20,
-                  },
-
-                  visible: {
-                    opacity: 1,
-                    y: 0,
-                  },
-                }}
+                variants={fadeIn}
                 initial="hidden"
                 whileInView="visible"
                 transition={{ duration: 1, delay: 0.5 }}
                 viewport={{ once: true }}
                 className="animate_top w-1/2 lg:w-1/4"
               >
-                <a href="index.html" className="relative">
+                <Link to="/" className="relative">
                   <img
                     width={110}
-                    height={80}
+                    height={150}
                     src="/images/logo/liftech_logo.webp"
-                    alt="Logo" loading="lazy" />
-                </a>
+                    alt="Liftech lépcsőliftek"
+                    loading="lazy"
+                  />
+                </Link>
 
-                <p className="mb-10 mt-5">Liftech Group Kft. Együtt a biztonságért és szakértelemért.</p>
+                <p className="mb-10 mt-5">
+                  Liftech Group Kft. Együtt a biztonságért és szakértelemért.
+                </p>
 
-                <p className="mb-1.5 text-sectiontitle uppercase tracking-[5px]">
+                <p className="mb-1.5 text-metatitle font-semibold uppercase tracking-[0.3em] text-white/60">
                   Kapcsolat
                 </p>
                 <a
                   href="mailto:liftechgroupkft@gmail.com"
-                  className="text-itemtitle font-medium text-black dark:text-white"
+                  className="break-words font-display text-itemtitle2 font-semibold tracking-wide text-white hover:text-accent"
                 >
-                 liftechgroupkft@gmail.com 
+                  liftechgroupkft@gmail.com
                 </a>
               </motion.div>
 
               <div className="flex w-full flex-col gap-8 md:flex-row md:justify-between md:gap-0 lg:w-2/3 xl:w-7/12">
                 <motion.div
-                  variants={{
-                    hidden: {
-                      opacity: 0,
-                      y: -20,
-                    },
-
-                    visible: {
-                      opacity: 1,
-                      y: 0,
-                    },
-                  }}
+                  variants={fadeIn}
                   initial="hidden"
                   whileInView="visible"
                   transition={{ duration: 1, delay: 0.1 }}
                   viewport={{ once: true }}
                   className="animate_top"
                 >
-                  <h4 className="mb-9 text-itemtitle2 font-medium text-black dark:text-white">
+                  <h4 className="mb-9 flex items-center gap-3 text-itemtitle2 font-semibold uppercase tracking-wide text-white">
+                    <StairSteps className="text-white" />
                     Gyors linkek
                   </h4>
 
                   <ul>
-                    <li>
-                      <a
-                        href="#"
-                        className="mb-3 inline-block hover:text-primary"
-                      >
-                        Főoldal
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="/magunkrol"
-                        className="mb-3 inline-block hover:text-primary"
-                      >
-                        Magunkról
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="/uj-lepcsoliftek"
-                        className="mb-3 inline-block hover:text-primary"
-                      >
-                        Új lépcsőliftek
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="/platformliftek"
-                        className="mb-3 inline-block hover:text-primary"
-                      >
-                        Platform liftek
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="/hasznalt-lepcsoliftek"
-                        className="mb-3 inline-block hover:text-primary"
-                      >
-                        Használt lépcsőliftek
-                      </a>
-                    </li>
+                    {quickLinks.map((link) => (
+                      <li key={link.path}>
+                        <Link
+                          to={link.path}
+                          className="mb-3 inline-block hover:text-white"
+                        >
+                          {link.title}
+                        </Link>
+                      </li>
+                    ))}
                   </ul>
                 </motion.div>
 
                 <motion.div
-                  variants={{
-                    hidden: {
-                      opacity: 0,
-                      y: -20,
-                    },
-
-                    visible: {
-                      opacity: 1,
-                      y: 0,
-                    },
-                  }}
+                  variants={fadeIn}
                   initial="hidden"
                   whileInView="visible"
                   transition={{ duration: 1, delay: 0.1 }}
                   viewport={{ once: true }}
                   className="animate_top"
                 >
-                  <h4 className="mb-9 text-itemtitle2 font-medium text-black dark:text-white">Kérdései vannak?</h4>
-                  
+                  <h4 className="mb-9 flex items-center gap-3 text-itemtitle2 font-semibold uppercase tracking-wide text-white">
+                    <StairSteps className="text-white" />
+                    Kérdései vannak?
+                  </h4>
+
                   <ul>
                     <li>
-                      <a
-                        href="/gyakori-kerdesek"
-                        className="mb-3 inline-block hover:text-primary"
+                      <Link
+                        to="/gyakori-kerdesek"
+                        className="mb-3 inline-block hover:text-white"
                       >
                         Gyakori kérdések
-                      </a>
+                      </Link>
                     </li>
                   </ul>
-                <p className="mb-10 mt-5">Olvassa el gyakran előforduló kérdésekre válaszainkat, vagy hívjon minket!</p>
-               <a
-                  href="tel:+36301495552"
-                  className="text-itemtitle font-medium text-black dark:text-white"
-                >
-                +36 30 149 5552
-                </a>
+                  <p className="mb-10 mt-5">
+                    Olvassa el gyakran előforduló kérdésekre válaszainkat, vagy
+                    hívjon minket!
+                  </p>
+                  <a
+                    href="tel:+36301495552"
+                    className="font-display text-itemtitle font-semibold tracking-wide text-white hover:text-accent"
+                  >
+                    +36 30 149 5552
+                  </a>
                 </motion.div>
-               </div>
+              </div>
             </div>
           </div>
           {/* <!-- Footer Top --> */}
 
           {/* <!-- Footer Bottom --> */}
-          <div className="flex flex-col flex-wrap items-center justify-center gap-5 border-t border-stroke py-7 dark:border-strokedark lg:flex-row lg:justify-between lg:gap-0">
+          <div className="flex flex-col flex-wrap items-center justify-center gap-5 border-t border-white/10 py-7 lg:flex-row lg:justify-between lg:gap-0">
             <motion.div
-              variants={{
-                hidden: {
-                  opacity: 0,
-                  y: -20,
-                },
-
-                visible: {
-                  opacity: 1,
-                  y: 0,
-                },
-              }}
+              variants={fadeIn}
               initial="hidden"
               whileInView="visible"
               transition={{ duration: 1, delay: 0.1 }}
@@ -178,22 +134,13 @@ const Footer = () => {
               className="animate_top"
             >
               <p>
-                &copy; {new Date().getFullYear()} Liftech Group Kft. Minden jog fenntartva.
+                &copy; {new Date().getFullYear()} Liftech Group Kft. Minden jog
+                fenntartva.
               </p>
             </motion.div>
 
             <motion.div
-              variants={{
-                hidden: {
-                  opacity: 0,
-                  y: -20,
-                },
-
-                visible: {
-                  opacity: 1,
-                  y: 0,
-                },
-              }}
+              variants={fadeIn}
               initial="hidden"
               whileInView="visible"
               transition={{ duration: 1, delay: 0.1 }}
@@ -204,28 +151,18 @@ const Footer = () => {
                 <li>
                   <a href="#" aria-label="social icon">
                     <svg
-                      className="fill-[#D1D8E0] transition-all duration-300 hover:fill-primary"
+                      className="fill-white/60 transition-all duration-300 hover:fill-white"
                       width="24"
                       height="24"
                       viewBox="0 0 24 24"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
                     >
-                      <g clipPath="url(#clip0_48_1499)">
-                        <path
-                          d="M14 13.5H16.5L17.5 9.5H14V7.5C14 6.47 14 5.5 16 5.5H17.5V2.14C17.174 2.097 15.943 2 14.643 2C11.928 2 10 3.657 10 6.7V9.5H7V13.5H10V22H14V13.5Z"
-                          fill=""
-                        />
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_48_1499">
-                          <rect width="24" height="24" fill="white" />
-                        </clipPath>
-                      </defs>
+                      <path d="M14 13.5H16.5L17.5 9.5H14V7.5C14 6.47 14 5.5 16 5.5H17.5V2.14C17.174 2.097 15.943 2 14.643 2C11.928 2 10 3.657 10 6.7V9.5H7V13.5H10V22H14V13.5Z" />
                     </svg>
                   </a>
                 </li>
-               </ul>
+              </ul>
             </motion.div>
           </div>
           {/* <!-- Footer Bottom --> */}

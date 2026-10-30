@@ -13,7 +13,7 @@ const ErroPage = () => {
           width={250}
           height={250} loading="lazy" />
 
-        <h2 className="mb-5 text-2xl font-semibold text-black dark:text-white md:text-4xl">
+        <h2 className="mb-5 font-display text-3xl font-bold uppercase text-navy md:text-5xl">
 		Üzenetét sikeresen megkaptuk!
         </h2>
         <p className="mb-7.5">
@@ -22,7 +22,7 @@ const ErroPage = () => {
 
         <a
           href="/"
-          className="inline-flex items-center gap-2.5 rounded-full bg-black px-6 py-3 font-medium text-white duration-300 ease-in-out hover:bg-blackho dark:bg-btndark dark:hover:bg-blackho"
+          className="inline-flex items-center gap-2.5 bg-navy px-8 py-3 font-display text-xl font-semibold uppercase tracking-wider text-white duration-300 ease-in-out hover:bg-accent"
         >
 	Vissza a főoldalra
           <svg

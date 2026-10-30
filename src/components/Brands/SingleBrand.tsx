@@ -28,7 +28,7 @@ const SingleBrand = ({ brand }: { brand: Brand }) => {
         className="animate_left mx-w-full relative block max-h-full aspect-[490/670]"
       >
         <img
-          className="absolute inset-0 h-full w-full transition-all duration-300 hover:opacity-100 dark:hidden"
+          className="absolute inset-0 h-full w-full transition-all duration-300 hover:opacity-100"
           src={image}
           alt={name} loading="lazy" />
      </motion.a>

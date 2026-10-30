@@ -42,7 +42,7 @@ export default async (req: Request) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      personalizations: [{ to: [{ email: "labasattila@gmail.com" }] }],
+      personalizations: [{ to: [{ email: "marciszenes@gmail.com" }] }],
       from: { email: "info@liftech.hu" },
       subject: `Tárgy: ${form.get("subject")}`,
       content: [

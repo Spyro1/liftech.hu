@@ -12,13 +12,19 @@ React + Vite + Tailwind single-page site, hosted on **Netlify**, with news manag
 ## Repository layout
 
 ```
-src/                    React app (pages in src/pages, route table in src/App.tsx)
-src/lib/sanity.ts       Fetches news posts from Sanity (public API, no token)
-src/components/News     News cards shown on the home page
-src/components/Contact  Contact form (posts to /api/contact)
-netlify/functions/      contact.mts - validates the form and sends the email via Resend
-netlify.toml            Build config, functions folder, SPA fallback redirect
-studio-liftech/         Sanity Studio (the editor UI for the marketing team)
+src/                            React app (pages in src/pages, route table in src/App.tsx)
+src/pages/                      One folder per route (home, termekek, kapcsolat, ...)
+src/components/sections/        Home page sections: Hero, Brands, Features, About, News, FAQ, Contact
+src/components/ui/              Shared pieces (SectionHeader, StairSteps, ImageViewer)
+src/data/                       Static content (features, FAQ, menu, product lists)
+src/lib/sanity.ts               Fetches news posts from Sanity (public API, no token)
+src/components/sections/News    News cards, laid out to fill the row based on how many posts exist
+src/components/sections/Contact Contact form (posts to /api/contact)
+public/images/icon/feature-*.svg  Icons of the "Miért válassza a Liftech-et?" cards
+netlify/functions/              contact.mts - validates the form and sends the email via Resend
+netlify.toml                    Build config, functions folder, SPA fallback redirect
+studio-liftech/                 Sanity Studio (the editor UI for the marketing team)
+.github/workflows/ci.yml        Typecheck/build checks (see "Continuous integration")
 ```
 
 ## Local development
@@ -39,8 +45,10 @@ Sanity Studio:
 ```bash
 cd studio-liftech
 npm install
-npm run dev              # http://localhost:3333
+npm run dev              # http://localhost:3333/production or /development
 ```
+
+If `npx sanity ...` fails with `Cannot find module 'sanity/cli'`, the Studio dependencies are not installed (or the install was interrupted): run `npm install` inside `studio-liftech` again.
 
 ## Continuous integration
 
@@ -53,7 +61,9 @@ Set these in Netlify: **Site configuration -> Environment variables**. Values pr
 | Variable | Secret? | Used by | Purpose |
 | --- | --- | --- | --- |
 | `VITE_SANITY_PROJECT_ID` | no | site | Sanity project id (`tvqj8hy2`) |
-| `VITE_SANITY_DATASET` | no | site | Sanity dataset, `production` |
+| `VITE_SANITY_DATASET` | no | site | Sanity dataset the site reads: `production` for the live site, `development` for testing. Falls back to `production` when empty |
+
+The project has two datasets, `production` and `development`, with the same schema. The site reads exactly one of them, chosen by `VITE_SANITY_DATASET` at **build time**. `.env.example` defaults to `development`, so local work and previews do not touch live content. On Netlify, set `production` for the production context and (optionally) `development` for deploy previews/branch deploys, using Netlify's per-context variable values.
 
 The two `VITE_` variables are the only ones the site itself needs. The email function needs these server-side variables (never give a secret a `VITE_` prefix, because that publishes it in the browser JavaScript):
 
@@ -81,13 +91,17 @@ The redirect in `netlify.toml` sends every path to `index.html` so deep links su
 
 The marketing team edits news in the Studio at https://liftech.sanity.studio/. Posts appear in the "Hírek és akciók" section of the home page. Nothing needs to be redeployed when they publish: the site fetches posts in the browser.
 
-**Dataset must be public.** Sanity -> https://www.sanity.io/manage -> project -> **API -> Datasets** -> `production` -> set visibility to **Public**. If it is private the site gets a 401 and the news section stays empty.
+**Two workspaces, one per dataset.** `studio-liftech/sanity.config.ts` defines a `production` and a `development` workspace (same project `tvqj8hy2`, same schema). The Studio shows a workspace switcher at the top left, and the URLs are `/production` and `/development`. Content is **not shared** between datasets: a post published in `development` does not show on the live site. Use `development` to try things out, and publish the real post in `production`.
+
+**Dataset must be public.** Sanity -> https://www.sanity.io/manage -> project -> **API -> Datasets** -> each dataset you use (`production`, `development`) -> set visibility to **Public**. If it is private the site gets a 401 and the news section stays empty.
 
 **Adding editors:** manage -> project -> **Members -> Invite**. Give marketing the **Editor** role (can create and publish, cannot change project settings). They log in at the Studio URL with Google, GitHub or email.
 
 **What editors fill in** ("Hír / akció" document): image, title, caption, date, optional link. The site shows the 12 newest by date. Unpublished drafts do not appear; they must press **Publish**.
 
-**Deploying Studio changes** (only needed when the schema in `studio-liftech/schemaTypes/` changes):
+**How the section lays out.** The cards fill the page width depending on how many posts there are (large screens): 1 post is one wide card (image beside text), 2-4 posts are that many equal columns, 5 or more are rows of 3 and any leftover posts on the last row stretch to fill it. Tablets use two columns, phones one. Images follow their own shape (the site reads the aspect ratio from Sanity), kept between 4:5 and 16:9; anything more extreme is shown whole with a light border instead of being cropped. Any image format works.
+
+**Deploying Studio changes** (needed when `sanity.config.ts` or the schema in `studio-liftech/schemaTypes/` changes):
 
 ```bash
 cd studio-liftech
@@ -160,7 +174,9 @@ Not required. If you want it later: unlock the domain at Rackhost, get the EPP/a
 | --- | --- |
 | Netlify build fails with "publish directory does not contain expected Next.js build output" | Next.js plugin still enabled, remove it (section 1) |
 | Whole site shows a 401 or "Error - Request ID" page | Netlify site protection / password enabled, or a bad deploy. Check **Site configuration -> Access & security** and the deploy log |
-| News section is missing | Dataset is private, or `VITE_SANITY_PROJECT_ID` / `VITE_SANITY_DATASET` missing (redeploy after adding) |
+| News section is missing | Dataset is private, `VITE_SANITY_PROJECT_ID` / `VITE_SANITY_DATASET` missing (redeploy after adding), or the dataset the site reads has no published posts (check which dataset `VITE_SANITY_DATASET` points to). The section hides itself when there are no posts |
+| Posts published in the Studio do not show on the live site | You published in the `development` workspace; the live site reads `production` |
+| `npx sanity deploy` fails with `Cannot find module 'sanity/cli'` | Run `npm install` in `studio-liftech` |
 | Contact form goes to the error page | The function returned non-2xx: check **Logs -> Functions -> contact** (missing `RESEND_API_KEY`/`CONTACT_TO_EMAIL`, unverified sender domain, photos over 5 MB) |
 | Form sends but no email | Check Resend -> Emails and the spam folder; with `onboarding@resend.dev` only the Resend account owner's address receives mail |
 | HTTPS warning after the domain move | Certificate not provisioned yet, rerun **Verify DNS configuration** |

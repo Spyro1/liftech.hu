@@ -23,14 +23,16 @@ const SingleFeature = ({ feature }: { feature: Feature }) => {
         whileInView="visible"
         transition={{ duration: 0.5 }}
         viewport={{ once: true }}
-        className="animate_top z-40 card-top p-7.5 transition-all hover:-translate-y-1 hover:before:bg-accent hover:shadow-sm xl:p-12.5"
+        className="animate_top card-top z-40 p-7.5 transition-all hover:-translate-y-1 hover:shadow-sm hover:before:bg-accent xl:p-12.5"
       >
-        <div className="relative flex h-16 w-16 items-center justify-center bg-navy">
-          <img src={icon} width={36} height={36} alt={title} loading="lazy" />
+        <div className="mb-5 flex items-center gap-4">
+          <div className="relative flex h-14 w-14 shrink-0 items-center justify-center bg-navy">
+            <img src={icon} width={32} height={32} alt="" loading="lazy" />
+          </div>
+          <h3 className="font-display text-2xl font-bold uppercase tracking-wide text-navy xl:text-itemtitle">
+            {title}
+          </h3>
         </div>
-        <h3 className="mb-5 mt-7.5 font-display text-2xl font-bold uppercase tracking-wide text-navy xl:text-itemtitle">
-          {title}
-        </h3>
         <p>{description}</p>
       </motion.div>
     </>

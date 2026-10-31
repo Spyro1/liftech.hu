@@ -14,13 +14,13 @@ const Brands = () => {
                 <SingleBrand brand={brand} key={key} />
               ))}
             </div>
-            <h1 className="mb-5 pr-16 font-display text-4xl font-bold uppercase text-white xl:text-hero">
+            <h1 className="mb-5 whitespace-nowrap pr-16 font-display text-4xl font-bold uppercase text-white xl:text-hero">
               Szakértelem.
             </h1>
-            <h1 className="mb-5 pr-16 font-display text-4xl font-bold uppercase text-white xl:text-hero">
+            <h1 className="mb-5 whitespace-nowrap pr-16 font-display text-4xl font-bold uppercase text-white xl:text-hero">
               Kényelem.
             </h1>
-            <h1 className="mb-5 pr-16 font-display text-4xl font-bold uppercase text-white xl:text-hero">
+            <h1 className="mb-5 whitespace-nowrap pr-16 font-display text-4xl font-bold uppercase text-white xl:text-hero">
               Biztonság.
             </h1>
           </div>

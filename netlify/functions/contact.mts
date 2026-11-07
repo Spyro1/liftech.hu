@@ -39,7 +39,7 @@ export default async (req: Request) => {
   );
 
   const html = `<div style="font-family:Helvetica,Arial,sans-serif;max-width:600px;color:#222">
-    <h2 style="margin:0 0 16px">Új üzenet a liftech.hu oldalról</h2>
+    <h2 style="margin:0 0 16px">Új üzenet a Liftech.hu oldalról</h2>
     <table style="border-collapse:collapse;width:100%">
       <tr><td style="padding:6px 12px 6px 0;color:#666;width:110px">Név</td><td>${esc(name)}</td></tr>
       <tr><td style="padding:6px 12px 6px 0;color:#666">Email</td><td><a href="mailto:${esc(email)}">${esc(email)}</a></td></tr>

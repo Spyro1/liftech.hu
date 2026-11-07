@@ -1,6 +1,6 @@
 import Seo from "@/lib/seo";
-import BlogData from "@/components/Blog/platformliftekData";
-import BlogItem from "@/components/Blog/termekItem";
+import BlogData from "@/data/platformliftekData";
+import BlogItem from "@/components/products/termekItem";
 
 const BlogPage = () => {
   return (

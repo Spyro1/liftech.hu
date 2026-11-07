@@ -1,7 +1,7 @@
 import Seo from "@/lib/seo";
-import BlogDataLepcso from "@/components/Blog/uj_lepcsoliftekData";
-import BlogDataPlatform from "@/components/Blog/platformliftekData";
-import BlogItem from "@/components/Blog/termekItem";
+import BlogDataLepcso from "@/data/uj_lepcsoliftekData";
+import BlogDataPlatform from "@/data/platformliftekData";
+import BlogItem from "@/components/products/termekItem";
 
 const BlogPage = () => {
   return (

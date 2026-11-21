@@ -10,6 +10,13 @@ export default defineType({
     defineField({ name: "caption", title: "Szöveg", type: "text" }),
     defineField({ name: "date", title: "Dátum", type: "datetime", initialValue: () => new Date().toISOString() }),
     defineField({ name: "link", title: "Link (nem kötelező)", type: "url" }),
+    defineField({
+      name: "linkText",
+      title: "Gomb szövege (nem kötelező)",
+      description: "A linkre mutató gomb felirata. Ha üres: \"Tudjon meg többet!\"",
+      type: "string",
+      hidden: ({ document }) => !document?.link,
+    }),
   ],
   orderings: [{ title: "Legújabb elöl", name: "dateDesc", by: [{ field: "date", direction: "desc" }] }],
 });

@@ -23,7 +23,9 @@ const News = () => {
   const [posts, setPosts] = useState<NewsPost[]>([]);
 
   useEffect(() => {
-    fetchNews().then(setPosts).catch(() => setPosts([]));
+    fetchNews()
+      .then(setPosts)
+      .catch(() => setPosts([]));
   }, []);
 
   if (posts.length === 0) return null;
@@ -71,13 +73,17 @@ const News = () => {
                 className={`card-top flex flex-col gap-7.5 p-4 pb-9 ${layout}`}
               >
                 <div
-                  className={`w-full self-start overflow-hidden bg-mist ${imageWidth}`}
+                  className={`relative mb-4 w-full self-start ${imageWidth}`}
                   style={{ aspectRatio: ratio }}
                 >
+                  <div
+                    className="absolute -bottom-4 -left-4 h-full w-full bg-navy"
+                    aria-hidden="true"
+                  />
                   <img
                     src={`${post.image}?w=1200&auto=format`}
                     alt={post.title}
-                    className="h-full w-full object-contain"
+                    className="absolute inset-0 h-full w-full bg-mist object-contain"
                     loading="lazy"
                   />
                 </div>
@@ -95,6 +101,24 @@ const News = () => {
                     )}
                   </h3>
                   <p className="whitespace-pre-line">{post.caption}</p>
+                  {post.link && (
+                    <a
+                      href={post.link}
+                      {...(/^https?:\/\//.test(post.link)
+                        ? { target: "_blank", rel: "noopener noreferrer" }
+                        : {})}
+                      className="mt-7.5 inline-flex items-center gap-2.5 bg-navy px-7.5 py-3 font-display text-xl font-semibold uppercase tracking-wider text-white duration-300 ease-in-out hover:bg-accent"
+                    >
+                      {post.linkText?.trim() || "Tudjon meg többet!"}
+                      <img
+                        src="/images/icon/icon-arrow-dark.svg"
+                        alt=""
+                        width={30}
+                        height={30}
+                        loading="lazy"
+                      />
+                    </a>
+                  )}
                 </div>
               </div>
             );

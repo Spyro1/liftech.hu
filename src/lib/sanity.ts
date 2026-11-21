@@ -4,11 +4,12 @@ export type NewsPost = {
   caption?: string;
   date: string;
   link?: string;
+  linkText?: string;
   image: string;
   imageRatio?: number;
 };
 
-const query = `*[_type=="news"]|order(date desc)[0...12]{_id,title,caption,date,link,"image":image.asset->url,"imageRatio":image.asset->metadata.dimensions.aspectRatio}`;
+const query = `*[_type=="news"]|order(date desc)[0...12]{_id,title,caption,date,link,linkText,"image":image.asset->url,"imageRatio":image.asset->metadata.dimensions.aspectRatio}`;
 
 export const fetchNews = async (): Promise<NewsPost[]> => {
   if (!import.meta.env.VITE_SANITY_PROJECT_ID) return [];

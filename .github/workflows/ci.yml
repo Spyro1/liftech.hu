@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  site:
+    name: Site (typecheck + build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Typecheck and build
+        run: npm run build
+      - name: Check the Netlify function compiles
+        run: npx esbuild netlify/functions/contact.mts --format=esm --log-level=warning --outfile=/dev/null
+
+  studio:
+    name: Sanity Studio (typecheck)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: studio-liftech
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: studio-liftech/package-lock.json
+      - run: npm ci
+      - run: npx tsc --noEmit

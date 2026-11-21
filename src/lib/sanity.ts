@@ -2,14 +2,17 @@ export type NewsPost = {
   _id: string;
   title: string;
   caption?: string;
-  date: string;
+  validFrom?: string;
+  validUntil?: string;
   link?: string;
   linkText?: string;
+  inverted?: boolean;
+  label?: string;
   image: string;
   imageRatio?: number;
 };
 
-const query = `*[_type=="news"]|order(date desc)[0...12]{_id,title,caption,date,link,linkText,"image":image.asset->url,"imageRatio":image.asset->metadata.dimensions.aspectRatio}`;
+const query = `*[_type=="news"]|order(_createdAt desc)[0...12]{_id,title,caption,validFrom,validUntil,link,linkText,inverted,label,"image":image.asset->url,"imageRatio":image.asset->metadata.dimensions.aspectRatio}`;
 
 export const fetchNews = async (): Promise<NewsPost[]> => {
   if (!import.meta.env.VITE_SANITY_PROJECT_ID) return [];

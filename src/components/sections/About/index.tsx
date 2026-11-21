@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 const About = () => {
   return (
@@ -7,22 +6,7 @@ const About = () => {
       <section className="overflow-hidden bg-mist py-20 lg:py-25 xl:py-30">
         <div className="mx-auto max-w-c-1235 px-4 md:px-8 xl:px-0">
           <div className="flex flex-col gap-10 md:flex-row md:items-center md:gap-8 lg:gap-32.5">
-            <motion.div
-              variants={{
-                hidden: {
-                  opacity: 0,
-                  x: -20,
-                },
-
-                visible: {
-                  opacity: 1,
-                  x: 0,
-                },
-              }}
-              initial="hidden"
-              whileInView="visible"
-              transition={{ duration: 0.5, delay: 0.1 }}
-              viewport={{ once: true }}
+            <div
               className="animate_left relative mx-auto block aspect-[588/526.5] w-full md:w-1/2"
             >
               <div
@@ -35,23 +19,8 @@ const About = () => {
                 className="absolute inset-0 h-full w-full object-cover"
                 loading="lazy"
               />
-            </motion.div>
-            <motion.div
-              variants={{
-                hidden: {
-                  opacity: 0,
-                  x: 20,
-                },
-
-                visible: {
-                  opacity: 1,
-                  x: 0,
-                },
-              }}
-              initial="hidden"
-              whileInView="visible"
-              transition={{ duration: 0.5, delay: 0.1 }}
-              viewport={{ once: true }}
+            </div>
+            <div
               className="animate_right md:w-1/2"
             >
               <span className="font-semibold uppercase tracking-[0.2em] text-navy">
@@ -87,7 +56,7 @@ const About = () => {
                   loading="lazy"
                 />
               </Link>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>

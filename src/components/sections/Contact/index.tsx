@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -46,22 +45,7 @@ const Contact = () => {
         <div className="relative mx-auto max-w-c-1390 pt-10 sm:px-7.5 lg:px-15 lg:pt-15 xl:px-20 xl:pt-20">
           <div className="absolute left-0 top-0 -z-1 h-2/3 w-full bg-mist"></div>
           <div className="flex flex-col-reverse flex-wrap gap-8 md:flex-row md:flex-nowrap md:justify-between xl:gap-20">
-            <motion.div
-              variants={{
-                hidden: {
-                  opacity: 0,
-                  y: -20,
-                },
-
-                visible: {
-                  opacity: 1,
-                  y: 0,
-                },
-              }}
-              initial="hidden"
-              whileInView="visible"
-              transition={{ duration: 1, delay: 0.1 }}
-              viewport={{ once: true }}
+            <div
               className="animate_top w-full min-w-0 card-top p-5 sm:p-8 md:w-3/5 lg:w-3/4 xl:p-15"
             >
               <h2 className="mb-8 font-display text-3xl font-bold uppercase text-navy sm:text-4xl md:mb-12.5 xl:text-sectiontitle2">
@@ -212,24 +196,9 @@ const Contact = () => {
                   </button>
                 </div>
               </form>
-            </motion.div>
+            </div>
 
-            <motion.div
-              variants={{
-                hidden: {
-                  opacity: 0,
-                  y: -20,
-                },
-
-                visible: {
-                  opacity: 1,
-                  y: 0,
-                },
-              }}
-              initial="hidden"
-              whileInView="visible"
-              transition={{ duration: 2, delay: 0.1 }}
-              viewport={{ once: true }}
+            <div
               className="animate_top w-full min-w-0 px-5 pb-2 sm:px-8 md:w-2/5 md:p-7.5 lg:w-[26%] xl:pt-15"
             >
               <h2 className="mb-8 font-display text-3xl font-bold uppercase text-navy sm:text-4xl md:mb-12.5 xl:text-sectiontitle2">
@@ -263,7 +232,7 @@ const Contact = () => {
                   <a href="tel:+36301495552">+36 30 149 5552</a>
                 </p>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>

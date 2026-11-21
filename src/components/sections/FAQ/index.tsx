@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { useState } from "react";
 import FAQItem from "./FAQItem";
 import faqData from "@/data/faqData";
@@ -28,22 +27,7 @@ const FAQ = () => {
               className="absolute inset-0 h-full w-full hidden" loading="lazy" />
           </div>
           <div className="flex flex-wrap gap-8 md:flex-nowrap md:items-center xl:gap-32.5">
-            <motion.div
-              variants={{
-                hidden: {
-                  opacity: 0,
-                  x: -20,
-                },
-
-                visible: {
-                  opacity: 1,
-                  x: 0,
-                },
-              }}
-              initial="hidden"
-              whileInView="visible"
-              transition={{ duration: 1, delay: 0.1 }}
-              viewport={{ once: true }}
+            <div
               className="animate_left md:w-2/5 lg:w-1/2"
             >
               <span className="font-semibold uppercase tracking-[0.2em] text-navy">
@@ -73,24 +57,9 @@ const FAQ = () => {
                   />
                 </svg>
               </a>
-            </motion.div>
+            </div>
 
-            <motion.div
-              variants={{
-                hidden: {
-                  opacity: 0,
-                  x: 20,
-                },
-
-                visible: {
-                  opacity: 1,
-                  x: 0,
-                },
-              }}
-              initial="hidden"
-              whileInView="visible"
-              transition={{ duration: 1, delay: 0.1 }}
-              viewport={{ once: true }}
+            <div
               className="animate_right md:w-3/5 lg:w-1/2"
             >
               <div className="card-top">
@@ -101,7 +70,7 @@ const FAQ = () => {
                   />
                 ))}
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>

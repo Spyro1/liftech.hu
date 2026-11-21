@@ -10,6 +10,14 @@ const BlogData: Blog[] = [
       "Robusztus kialakítású, dupla sínes lépcsőlift, amely a kanyarodó lépcsőkre tökéletes választás.",
   },
   {
+    _id: 1.5,
+    mainImage: "/images/termekek/acorn/130-stairlift-wh.png",
+    slug:"uj-lepcsoliftek/acorn",
+    title: "Acorn",
+    metadata:
+      "Az Acorn lépcsőlift biztonságos és kényelmes segítséget nyújt az otthoni lépcsőhasználathoz. Egyszerűen kezelhető, használaton kívül összecsukható, akkumulátoros működésének köszönhetően pedig áramszünet esetén is használható.",
+  },
+  {
     _id: 2,
     mainImage: "/images/termekek/essential/essential2.webp",
     slug:"uj-lepcsoliftek/essential",

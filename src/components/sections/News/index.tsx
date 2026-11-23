@@ -1,41 +1,80 @@
 import { useEffect, useState } from "react";
 import { fetchNews, NewsPost } from "@/lib/sanity";
 import SectionHeader from "@/components/ui/SectionHeader";
-
-// Columns per row on large screens, based on how many posts there are.
-const columnsFor = (count: number) => (count <= 4 ? count : 3);
-
-// Tailwind needs full class names, so the spans are spelled out.
-const lgSpan: Record<number, string> = {
-  12: "lg:col-span-12",
-  6: "lg:col-span-6",
-  4: "lg:col-span-4",
-  3: "lg:col-span-3",
-};
+import StairSteps from "@/components/ui/StairSteps";
 
 // Keep the image area between portrait (4:5) and wide (16:9); anything beyond
-// that is letterboxed instead of cropped.
+// that is letterboxed instead of cropped, so flyers with text stay readable.
 const MIN_RATIO = 4 / 5;
 const MAX_RATIO = 16 / 9;
 const DEFAULT_RATIO = 4 / 3;
+// Tallest an image may be: 70% of the screen height, and never above 640px.
+const MAX_IMAGE_HEIGHT = "min(70vh, 640px)";
+
+// Colour schemes. Tailwind needs full class names, so each is spelled out.
+const themes = {
+  default: {
+    text: "",
+    offset: "bg-navy",
+    heading: "text-navy",
+    titleHover: "hover:text-accent",
+    body: "text-ink",
+    button: "bg-navy text-white hover:bg-accent",
+  },
+  // "Kiemelt" posts put the text on a navy panel so they stand out.
+  inverted: {
+    text: "bg-navy px-5 py-8 sm:px-8 sm:py-10 lg:px-12 lg:py-12 xl:px-15",
+    offset: "bg-accent",
+    heading: "text-white",
+    titleHover: "hover:text-white/70",
+    body: "text-white/80",
+    button: "bg-white text-navy hover:bg-accent hover:text-white",
+  },
+};
+
+const dateFormat = new Intl.DateTimeFormat("hu-HU", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+
+// Sanity "date" values are "YYYY-MM-DD"; parse as a local date so the day
+// never shifts with the time zone.
+const parseDay = (value: string) => {
+  const [y, m, d] = value.split("-").map(Number);
+  return new Date(y, m - 1, d);
+};
+
+// "Érvényes: 2026. november 20. – december 31." / "... 2026. december 31-ig"
+const validityText = (from?: string, until?: string) => {
+  if (from && until) {
+    return `Érvényes: ${dateFormat.formatRange(parseDay(from), parseDay(until))}`;
+  }
+  if (until) {
+    // Drop the trailing period before the "-ig" suffix.
+    return `Érvényes: ${dateFormat.format(parseDay(until)).replace(/\.$/, "")}-ig`;
+  }
+  if (from) return `Kezdete: ${dateFormat.format(parseDay(from))}`;
+  return null;
+};
 
 const News = () => {
   const [posts, setPosts] = useState<NewsPost[]>([]);
 
   useEffect(() => {
-    fetchNews().then(setPosts).catch(() => setPosts([]));
+    fetchNews()
+      .then(setPosts)
+      .catch(() => setPosts([]));
   }, []);
 
   if (posts.length === 0) return null;
 
-  const count = posts.length;
-  const columns = columnsFor(count);
-  // Posts left over on the last row stretch to fill it.
-  const leftover = count % columns;
-
   return (
-    <section id="hirek" className="py-20 lg:py-25 xl:py-30">
-      <div className="mx-auto max-w-c-1315 px-4 md:px-8 xl:px-0">
+    <section
+      id="hirek"
+      className="overflow-hidden bg-mist py-20 lg:py-25 xl:py-30"
+    >
+      <div className="mx-auto max-w-c-1390 px-4 md:px-8 2xl:px-0">
         <SectionHeader
           headerInfo={{
             title: "AKTUÁLIS",
@@ -43,50 +82,84 @@ const News = () => {
             description: "",
           }}
         />
-        <div className="mt-12.5 grid grid-cols-1 gap-7.5 md:grid-cols-2 lg:mt-15 lg:grid-cols-12 xl:mt-20 xl:gap-10">
+        <div className="mt-12.5 flex flex-col gap-20 lg:mt-15 lg:gap-25 xl:mt-20">
           {posts.map((post, index) => {
-            const inLastRow = leftover > 0 && index >= count - leftover;
-            const lgWidth = inLastRow ? 12 / leftover : 12 / columns;
-            const lgWide = lgWidth === 12;
-            const mdWide = count % 2 === 1 && index === count - 1;
-
+            const t = post.inverted ? themes.inverted : themes.default;
+            // Every second post puts the image on the right.
+            const reversed = index % 2 === 1;
             const ratio = Math.min(
               MAX_RATIO,
               Math.max(MIN_RATIO, post.imageRatio ?? DEFAULT_RATIO),
             );
+            const validity = validityText(post.validFrom, post.validUntil);
+            const label = post.label?.trim();
 
-            const layout = [
-              mdWide ? "md:col-span-2 md:flex-row" : "",
-              lgWide ? "lg:flex-row" : mdWide ? "lg:flex-col" : "",
-              lgSpan[lgWidth],
-            ].join(" ");
-            const imageWidth = [
-              mdWide ? "md:w-1/2 md:shrink-0" : "",
-              lgWide ? "lg:w-1/2 lg:shrink-0" : mdWide ? "lg:w-full" : "",
-            ].join(" ");
+            const linkProps = post.link
+              ? {
+                  href: post.link,
+                  ...(/^https?:\/\//.test(post.link)
+                    ? { rel: "noopener noreferrer" }
+                    : {}),
+                }
+              : null;
 
             return (
-              <div
+              <article
                 key={post._id}
-                className={`card-top flex flex-col gap-7.5 p-4 pb-9 ${layout}`}
+                className={`flex w-full flex-col gap-10 md:items-center md:gap-8 lg:gap-12 xl:gap-20 ${
+                  reversed ? "md:flex-row-reverse" : "md:flex-row"
+                }`}
               >
-                <div
-                  className={`w-full self-start overflow-hidden bg-mist ${imageWidth}`}
-                  style={{ aspectRatio: ratio }}
-                >
-                  <img
-                    src={`${post.image}?w=1200&auto=format`}
-                    alt={post.title}
-                    className="h-full w-full object-contain"
-                    loading="lazy"
-                  />
+                {/* Image with the offset block, as in the About section */}
+                {/* The column is half the row; the image inside is capped in
+                    height (MAX_IMAGE_HEIGHT) so tall images don't overflow the
+                    screen, shrinking its width to keep the aspect ratio. */}
+                <div className="flex w-full justify-center md:w-1/2 md:shrink-0">
+                  <div
+                    className={`relative ${reversed ? "mr-4" : "ml-4"}`}
+                    style={{
+                      aspectRatio: ratio,
+                      width: `min(calc(100% - 1rem), calc(${MAX_IMAGE_HEIGHT} * ${ratio}))`,
+                    }}
+                  >
+                    <div
+                      className={`absolute -bottom-4 h-full w-full ${
+                        reversed ? "-right-4" : "-left-4"
+                      } ${t.offset}`}
+                      aria-hidden="true"
+                    />
+                    <img
+                      src={`${post.image}?w=1400&auto=format`}
+                      alt={post.title}
+                      className="absolute inset-0 h-full w-full bg-mist object-contain"
+                      loading="lazy"
+                    />
+                    {label && (
+                      <span className="absolute -top-2 right-4 bg-accent px-4.5 py-1 text-metatitle uppercase tracking-widest text-white">
+                        {label}
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <div className="flex-1 self-center px-4">
-                  <h3 className="mb-3.5 font-display text-2xl font-bold uppercase tracking-wide text-navy xl:text-itemtitle2">
-                    {post.link ? (
+
+                <div className={`min-w-0 md:flex-1 ${t.text}`}>
+                  {validity && (
+                    <div className="mb-4 inline-flex items-center gap-3">
+                      <StairSteps className={`shrink-0 ${t.heading}`} />
+                      <span
+                        className={`text-metatitle font-semibold uppercase tracking-[0.3em] ${t.heading}`}
+                      >
+                        {validity}
+                      </span>
+                    </div>
+                  )}
+                  <h3
+                    className={`mb-6 break-words font-display text-4xl font-bold uppercase leading-[0.95] sm:text-5xl xl:text-hero ${t.heading}`}
+                  >
+                    {linkProps ? (
                       <a
-                        href={post.link}
-                        className="duration-300 hover:text-accent"
+                        {...linkProps}
+                        className={`duration-300 ${t.titleHover}`}
                       >
                         {post.title}
                       </a>
@@ -94,9 +167,34 @@ const News = () => {
                       post.title
                     )}
                   </h3>
-                  <p className="whitespace-pre-line">{post.caption}</p>
+                  {post.caption && (
+                    <p
+                      className={`mb-7.5 whitespace-pre-line text-metatitle2 ${t.body}`}
+                    >
+                      {post.caption}
+                    </p>
+                  )}
+                  {linkProps && (
+                    <a
+                      {...linkProps}
+                      className={`inline-flex items-center gap-3 px-7.5 py-3 font-display text-xl font-semibold uppercase tracking-wider duration-300 ease-in-out ${t.button}`}
+                    >
+                      {post.linkText?.trim() || "Tudjon meg többet!"}
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 14 14"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M10.4767 6.16701L6.00668 1.69701L7.18501 0.518677L13.6667 7.00034L7.18501 13.482L6.00668 12.3037L10.4767 7.83368H0.333344V6.16701H10.4767Z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                    </a>
+                  )}
                 </div>
-              </div>
+              </article>
             );
           })}
         </div>

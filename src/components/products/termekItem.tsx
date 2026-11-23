@@ -1,5 +1,4 @@
 import { Blog } from "@/types/blog";
-import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
 const BlogItem = ({ blog }: { blog: Blog }) => {
@@ -7,22 +6,7 @@ const BlogItem = ({ blog }: { blog: Blog }) => {
 
   return (
     <>
-      <motion.div
-        variants={{
-          hidden: {
-            opacity: 0,
-            y: -20,
-          },
-
-          visible: {
-            opacity: 1,
-            y: 0,
-          },
-        }}
-        initial="hidden"
-        whileInView="visible"
-        transition={{ duration: 0.5, delay: 0.5 }}
-        viewport={{ once: true }}
+      <div
         className="animate_top group card-top p-4 pb-9 transition-all hover:-translate-y-1 hover:before:bg-accent hover:shadow-sm"
       >
         <Link to={"/" + slug} className="relative block aspect-[368/239]">
@@ -37,7 +21,7 @@ const BlogItem = ({ blog }: { blog: Blog }) => {
           </h3>
           <p className="line-clamp-3">{metadata}</p>
         </div>
-      </motion.div>
+      </div>
     </>
   );
 };

@@ -16,6 +16,7 @@ import Termekek from "@/pages/termekek";
 import Hasznalt from "@/pages/hasznalt-lepcsoliftek";
 import UjLepcsoliftek from "@/pages/uj-lepcsoliftek";
 import Alpha from "@/pages/uj-lepcsoliftek/alpha";
+import Acorn from "@/pages/uj-lepcsoliftek/acorn";
 import Delta from "@/pages/uj-lepcsoliftek/delta";
 import Essential from "@/pages/uj-lepcsoliftek/essential";
 import Omega from "@/pages/uj-lepcsoliftek/omega";
@@ -55,6 +56,7 @@ export default function App() {
         <Route path="/hasznalt-lepcsoliftek" element={<Hasznalt />} />
         <Route path="/uj-lepcsoliftek" element={<UjLepcsoliftek />} />
         <Route path="/uj-lepcsoliftek/alpha" element={<Alpha />} />
+        <Route path="/uj-lepcsoliftek/acorn" element={<Acorn />} />
         <Route path="/uj-lepcsoliftek/delta" element={<Delta />} />
         <Route path="/uj-lepcsoliftek/essential" element={<Essential />} />
         <Route path="/uj-lepcsoliftek/omega" element={<Omega />} />

@@ -1,11 +1,5 @@
-import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import StairSteps from "@/components/ui/StairSteps";
-
-const fadeIn = {
-  hidden: { opacity: 0, y: -20 },
-  visible: { opacity: 1, y: 0 },
-};
 
 const quickLinks = [
   { title: "Főoldal", path: "/" },
@@ -23,12 +17,7 @@ const Footer = () => {
           {/* <!-- Footer Top --> */}
           <div className="py-20 lg:py-25">
             <div className="flex flex-wrap gap-8 lg:justify-between lg:gap-0">
-              <motion.div
-                variants={fadeIn}
-                initial="hidden"
-                whileInView="visible"
-                transition={{ duration: 1, delay: 0.5 }}
-                viewport={{ once: true }}
+              <div
                 className="animate_top w-full sm:w-1/2 lg:w-1/4"
               >
                 <Link to="/" className="relative">
@@ -54,15 +43,10 @@ const Footer = () => {
                 >
                   liftechgroupkft@gmail.com
                 </a>
-              </motion.div>
+              </div>
 
               <div className="flex w-full flex-col gap-8 md:flex-row md:justify-between md:gap-0 lg:w-2/3 xl:w-7/12">
-                <motion.div
-                  variants={fadeIn}
-                  initial="hidden"
-                  whileInView="visible"
-                  transition={{ duration: 1, delay: 0.1 }}
-                  viewport={{ once: true }}
+                <div
                   className="animate_top"
                 >
                   <h4 className="mb-9 flex items-center gap-3 text-itemtitle2 font-semibold uppercase tracking-wide text-white">
@@ -82,14 +66,9 @@ const Footer = () => {
                       </li>
                     ))}
                   </ul>
-                </motion.div>
+                </div>
 
-                <motion.div
-                  variants={fadeIn}
-                  initial="hidden"
-                  whileInView="visible"
-                  transition={{ duration: 1, delay: 0.1 }}
-                  viewport={{ once: true }}
+                <div
                   className="animate_top"
                 >
                   <h4 className="mb-9 flex items-center gap-3 text-itemtitle2 font-semibold uppercase tracking-wide text-white">
@@ -117,7 +96,7 @@ const Footer = () => {
                   >
                     +36 30 149 5552
                   </a>
-                </motion.div>
+                </div>
               </div>
             </div>
           </div>
@@ -125,26 +104,16 @@ const Footer = () => {
 
           {/* <!-- Footer Bottom --> */}
           <div className="flex flex-col flex-wrap items-center justify-center gap-5 border-t border-white/10 py-7 lg:flex-row lg:justify-between lg:gap-0">
-            <motion.div
-              variants={fadeIn}
-              initial="hidden"
-              whileInView="visible"
-              transition={{ duration: 1, delay: 0.1 }}
-              viewport={{ once: true }}
+            <div
               className="animate_top"
             >
               <p>
                 &copy; {new Date().getFullYear()} Liftech Group Kft. Minden jog
                 fenntartva.
               </p>
-            </motion.div>
+            </div>
 
-            <motion.div
-              variants={fadeIn}
-              initial="hidden"
-              whileInView="visible"
-              transition={{ duration: 1, delay: 0.1 }}
-              viewport={{ once: true }}
+            <div
               className="animate_top"
             >
               <ul className="flex items-center gap-5">
@@ -163,9 +132,10 @@ const Footer = () => {
                   </a>
                 </li>
               </ul>
-            </motion.div>
+            </div>
           </div>
           {/* <!-- Footer Bottom --> */}
+          <div className="pb-10"/>
         </div>
       </footer>
     </>

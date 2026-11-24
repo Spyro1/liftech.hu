@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import Seo from "@/lib/seo";
 import ImageViewer from "@/components/ui/ImageViewer";
-import SectionHeader from "@/components/ui/SectionHeader";
+import PageHero from "@/components/ui/PageHero";
 
 interface GalleryImage {
   src: string;
@@ -29,26 +29,39 @@ export default function IndexPage() {
   );
   const prev = useCallback(
     () =>
-      setCurrent((i) => (i === null ? i : (i - 1 + images.length) % images.length)),
+      setCurrent((i) =>
+        i === null ? i : (i - 1 + images.length) % images.length,
+      ),
     [],
   );
 
   return (
     <>
       <Seo title="Galéria | Liftech.hu" description="Galéria" />
-      <section className="pb-20 pt-35 lg:pb-25 lg:pt-45 xl:pb-30 xl:pt-50">
-        <div className="mx-auto max-w-c-1390 px-4 md:px-8 2xl:px-0">
-          <SectionHeader
-            headerInfo={{
-              title: "Galéria",
-              subtitle: "Tekintse meg eddigi munkáinkat",
-              description: "",
-            }}
-          />
+      <PageHero
+        kicker="Galéria"
+        title="Tekintse meg"
+        highlight="eddigi munkáinkat"
+        lead={`${images.length} fotó az ország különböző pontjain telepített lépcsőliftjeinkről és platformliftjeinkről. Kattintson egy képre a nagyításhoz.`}
+      />
 
-          <ul className="mt-12.5 grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4 lg:grid-cols-4 xl:grid-cols-5">
+      <section className="py-16 lg:py-20 xl:py-25">
+        <div className="mx-auto max-w-c-1390 px-4 md:px-8 2xl:px-0">
+          {/* Dense grid: every 7th photo is shown large (2x2) to break the
+              rhythm; grid-flow-dense back-fills the gaps. */}
+          <ul className="grid grid-flow-dense grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4 lg:grid-cols-4 xl:grid-cols-5">
             {images.map((image, index) => (
-              <li key={image.src}>
+              <li
+                key={image.src}
+                className={
+                  index % 7 === 0
+                    ? // big tiles alternate between the left and right edge
+                      `col-span-2 row-span-2 ${
+                        index % 14 === 7 ? "lg:col-start-3 xl:col-start-4" : ""
+                      }`
+                    : ""
+                }
+              >
                 <button
                   type="button"
                   onClick={() => setCurrent(index)}
@@ -61,9 +74,26 @@ export default function IndexPage() {
                     width={400}
                     height={400}
                     loading="lazy"
-                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                   />
-                  <span className="absolute inset-0 border-b-4 border-transparent bg-navy/0 transition-colors duration-300 group-hover:border-accent group-hover:bg-navy/20" />
+                  {/* hover: navy tint, accent bottom bar and a zoom icon */}
+                  <span className="absolute inset-0 border-b-4 border-transparent bg-navy/0 transition-colors duration-300 group-hover:border-accent group-hover:bg-navy/35" />
+                  <span
+                    className="absolute bottom-3 right-3 flex h-10 w-10 translate-y-2 items-center justify-center bg-white text-navy opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100"
+                    aria-hidden="true"
+                  >
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                    >
+                      <circle cx="10.5" cy="10.5" r="6.5" />
+                      <path d="M15.5 15.5 21 21M10.5 7.5v6M7.5 10.5h6" />
+                    </svg>
+                  </span>
                 </button>
               </li>
             ))}

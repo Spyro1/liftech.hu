@@ -3,7 +3,7 @@ import StairSteps from "@/components/ui/StairSteps";
 
 const quickLinks = [
   { title: "Főoldal", path: "/" },
-  { title: "Magunkról", path: "/rolunk" },
+  { title: "Rólunk", path: "/rolunk" },
   { title: "Új lépcsőliftek", path: "/uj-lepcsoliftek" },
   { title: "Platform liftek", path: "/platformliftek" },
   { title: "Használt lépcsőliftek", path: "/hasznalt-lepcsoliftek" },

@@ -7,7 +7,9 @@ const MAX_TOTAL_BYTES = 5 * 1024 * 1024;
 const fieldClass =
   "w-full min-w-0 border border-line bg-white px-4 py-3.5 text-base text-ink placeholder:text-slate/70 focus:border-navy focus-visible:outline-none";
 
-const Contact = () => {
+// showDetails=false hides the address/email/phone column (used on the
+// Kapcsolat page, whose header already shows them) and widens the form.
+const Contact = ({ showDetails = true }: { showDetails?: boolean }) => {
   const navigate = useNavigate();
   const [sending, setSending] = useState(false);
   const [fileNames, setFileNames] = useState<string[]>([]);
@@ -41,12 +43,23 @@ const Contact = () => {
   return (
     <>
       {/* <!-- ===== Contact Start ===== --> */}
-      <section id="support" className="px-4 md:px-8 2xl:px-0">
-        <div className="relative mx-auto max-w-c-1390 pt-10 sm:px-7.5 lg:px-15 lg:pt-15 xl:px-20 xl:pt-20">
-          <div className="absolute left-0 top-0 -z-1 h-2/3 w-full bg-mist"></div>
+      <section id="support" className="relative isolate px-4 pb-20 md:px-8 lg:pb-25 2xl:px-0">
+        {/* Full-width grey band continuing the grey section above (About on
+            the home page, the page header on Kapcsolat), so the top of the
+            form card sits on it with no white gap in between. With the
+            details column it is taller, so the column stays on grey. */}
+        <div
+          className={`absolute inset-x-0 top-0 -z-1 bg-mist ${
+            showDetails ? "h-2/3" : "h-40 md:h-56"
+          }`}
+          aria-hidden="true"
+        />
+        <div className="relative mx-auto max-w-c-1390 sm:px-7.5 lg:px-15 xl:px-20">
           <div className="flex flex-col-reverse flex-wrap gap-8 md:flex-row md:flex-nowrap md:justify-between xl:gap-20">
             <div
-              className="animate_top w-full min-w-0 card-top p-5 sm:p-8 md:w-3/5 lg:w-3/4 xl:p-15"
+              className={`animate_top card-top w-full min-w-0 p-5 sm:p-8 xl:p-15 ${
+                showDetails ? "md:w-3/5 lg:w-3/4" : "mx-auto max-w-c-1016"
+              }`}
             >
               <h2 className="mb-8 font-display text-3xl font-bold uppercase text-navy sm:text-4xl md:mb-12.5 xl:text-sectiontitle2">
                 Küldjön üzenetet nekünk!
@@ -198,41 +211,41 @@ const Contact = () => {
               </form>
             </div>
 
-            <div
-              className="animate_top w-full min-w-0 px-5 pb-2 sm:px-8 md:w-2/5 md:p-7.5 lg:w-[26%] xl:pt-15"
-            >
-              <h2 className="mb-8 font-display text-3xl font-bold uppercase text-navy sm:text-4xl md:mb-12.5 xl:text-sectiontitle2">
-                Kapcsolat
-              </h2>
+            {showDetails && (
+              <div className="animate_top w-full min-w-0 px-5 pb-2 sm:px-8 md:w-2/5 md:p-7.5 lg:w-[26%] xl:pt-15">
+                <h2 className="mb-8 font-display text-3xl font-bold uppercase text-navy sm:text-4xl md:mb-12.5 xl:text-sectiontitle2">
+                  Kapcsolat
+                </h2>
 
-              <div className="5 mb-7">
-                <h3 className="mb-4 text-metatitle font-semibold uppercase tracking-[0.3em] text-navy">
-                  Cím
-                </h3>
-                <p>2040 Budaörs Ébner György utca 4.</p>
+                <div className="5 mb-7">
+                  <h3 className="mb-4 text-metatitle font-semibold uppercase tracking-[0.3em] text-navy">
+                    Cím
+                  </h3>
+                  <p>2040 Budaörs Ébner György utca 4.</p>
+                </div>
+                <div className="5 mb-7">
+                  <h3 className="mb-4 text-metatitle font-semibold uppercase tracking-[0.3em] text-navy">
+                    Email cím
+                  </h3>
+                  <p>
+                    <a
+                      href="mailto:liftechgroupkft@gmail.com"
+                      className="break-all"
+                    >
+                      liftechgroupkft@gmail.com
+                    </a>
+                  </p>
+                </div>
+                <div>
+                  <h4 className="mb-4 text-metatitle font-semibold uppercase tracking-[0.3em] text-navy">
+                    Telefonszám
+                  </h4>
+                  <p>
+                    <a href="tel:+36301495552">+36 30 149 5552</a>
+                  </p>
+                </div>
               </div>
-              <div className="5 mb-7">
-                <h3 className="mb-4 text-metatitle font-semibold uppercase tracking-[0.3em] text-navy">
-                  Email cím
-                </h3>
-                <p>
-                  <a
-                    href="mailto:liftechgroupkft@gmail.com"
-                    className="break-all"
-                  >
-                    liftechgroupkft@gmail.com
-                  </a>
-                </p>
-              </div>
-              <div>
-                <h4 className="mb-4 text-metatitle font-semibold uppercase tracking-[0.3em] text-navy">
-                  Telefonszám
-                </h4>
-                <p>
-                  <a href="tel:+36301495552">+36 30 149 5552</a>
-                </p>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </section>

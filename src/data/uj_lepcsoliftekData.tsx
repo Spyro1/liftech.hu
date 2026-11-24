@@ -11,7 +11,7 @@ const BlogData: Blog[] = [
   },
   {
     _id: 1.5,
-    mainImage: "/images/termekek/acorn/130-stairlift-wh.png",
+    mainImage: "/images/termekek/acorn/130-stairlift-wh-wide.png",
     slug:"uj-lepcsoliftek/acorn",
     title: "Acorn",
     metadata:
@@ -49,6 +49,9 @@ const BlogData: Blog[] = [
     metadata:
       "Keskeny, szűk lépcsőkre tervezve.",
   },
+  // Hidden for now: Stairmax, SA-3 & SA-S and Public. Uncomment to show them
+  // again on the Termékek and Új lépcsőliftek pages.
+  /*
   {
     _id: 6,
     mainImage: "/images/termekek/stair/stairmax3.webp",
@@ -73,6 +76,7 @@ const BlogData: Blog[] = [
     metadata:
       "Általános használatú, kültéri és beltéri lépcsőző.",
   },
+  */
   ];
 
 export default BlogData;
